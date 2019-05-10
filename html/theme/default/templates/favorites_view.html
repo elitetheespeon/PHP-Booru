@@ -1,0 +1,39 @@
+<include href="header.html" />
+<div class="content_frame">
+    <div class="altcontent">
+        <script type="text/javascript">
+		//<![CDATA[
+		var posts = {}; var pignored = {};
+		//]]>
+		</script>
+<check if="{{ @numrows == 0 }}">
+<true>
+        <h1>{{ @t_notfound }}</h1><br />
+</true>
+<false>
+    <repeat group="{{ @favorites }}" value="{{ @f }}">
+        <span class="thumb" style="margin: 10px;"><a href="/post/view/{{ @f.id }}" id="p{{ @f.id }}" onclick="document.location='/post/view/{{ @f.id }}'; return false;"><img src="{{ @f.imagestr }}" title="{{ @f.tags }}" border="0" alt="image_thumb"/></a>
+        <check if="{{ @checked_user_id == @PARAMS.id }}">
+            <br /><a href="#" onclick="document.location='/favorites/delete/{{ @f.id }}/{{ @PARAMS.page }}'; return false;"><b>Remove</b></a>
+        </check>
+        </span>
+        <script type="text/javascript">
+		//<![CDATA[
+		posts['{{ @f.id }}'] = {'tags':'{{ @f.tagsjs }}'.split(/ /g), 'rating':'{{ @f.rating }}', 'score':'{{ @f.score }}', 'user':'{{ @f.userjs }}'}
+		//]]>
+		</script>
+    </repeat>
+        <div style="text-align: right;"><a id="pi" href="#" onclick="showHideIgnored('0','pi'); return false;"></a></div>
+		<script type="text/javascript">
+		//<![CDATA[
+		filterPosts(posts)
+		//]]>
+		</script>
+		<div id='paginator'>
+        {{ @pagebrowser | raw }}
+        </div>
+</false>
+</check>
+    </div>
+</div>
+<include href="footer.html" />

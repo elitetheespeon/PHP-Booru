@@ -1,0 +1,18 @@
+<include href="header.html" />
+            <div class="content_frame">
+            <div class="altcontent">
+<check if="{{ @tagcount <= 0 }}">
+<true>
+<h1>This post has no tag history!</h1>
+</true>
+<false>
+            <table width="100%" class="highlightable" id="history">
+			<tr><th width="1%"></th><th width="4%">Post</th><th width="5%">Date</th><th width="10%">User</th><th width="60%">Tags</th><th width="10%">Options</th></tr>
+<repeat group="{{ @tagdata }}" value="{{ @t }}">
+			<tr><td></td><td><a href="/post/view/{{ @PARAMS.id }}">{{ @PARAMS.id }}</a></td><td>{{ @t.updated_at }}</td><td>{{ @t.user }}</td><td>{{ @t.tags }}</td><td><a href="#" onclick="if(confirm('Do you really want to revert to this point?')){document.location='/history/revert_tags/{{ @PARAMS.id }}/{{ @t.version }}'; return false;}">Revert</a></td></tr>
+</repeat>
+            </table>
+</false>
+</check>
+            <br /></div></div>
+<include href="footer.html" />

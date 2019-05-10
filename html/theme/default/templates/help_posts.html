@@ -1,0 +1,112 @@
+<include href="header.html" />
+<div class="content_frame">
+<div class="altcontent">
+<div class="help">
+  <h1>Help: Posts</h1>
+  <p>A post represents a single file that's been uploaded. Each post can have several tags, comments, and notes. If you have an account, you can also add a post to your favorites.</p>
+  
+<div class="section">
+	<h4>Search</h4>
+	<p>Searching for posts is straightforward. Simply enter the tags you want to search for, separated by spaces. For example, searching for <code>original panties</code> will return every post that has both the original tag <strong>AND</strong> the panties tag.</p>
+</div>
+  
+<div class="section">
+	<h4>Tag List</h4>
+    <p>In both the listing page and the show page you'll notice a list of tag links with characters next to them. Here's an explanation of what they do:</p>
+    <dl>
+      
+      <dt>+</dt>
+      <dd>This adds the tag to the current search.</dd>
+
+      <dt>&ndash;</dt>
+      <dd>This adds the negated tag to the current search.</dd>
+           
+      <dt>950</dt>
+      <dd>The number next to the tag represents how many posts there are. This isn't always the total number of posts for that tag. It may be slightly out of date as cache isn't always refreshed.</dd>
+
+    </dl>
+    <p>When you're not searching for a tag, by default the tag list will show the last few tags added to the database. When you are searching for tags, the tag list will show related tags, alphabetically.</p>
+</div>
+
+  <h1>Help: Tags</h1>
+
+  <div class="section">
+    <p>Tags are basically keywords you can use to describe posts, allowing you to easily search and explore posts based on their content.
+  
+    <div class="section">
+      <h4>Tagging Guidelines</h4>
+      <p>When you're tagging a post, use the following guidelines:</p>
+    
+      <div class="section">
+        <h5>Replace spaces with underscores</h5>
+        <p>For example, "Animal Crossing" becomes <code>animal_crossing</code>. This small concession makes other features much easier to implement.</p>
+      </div>
+    
+      <div class="section">
+        <h5>Forbidden characters</h5>
+        <p>The following characters are stripped from tags: commas and semicolons.</p>
+      </div>
+    
+      <div class="section">
+        <h5>Artist names</h5>
+        <p>An artist tag should be named using whatever representation of the artist's name is most widely known. Since this is mostly subject to interpretation, and some artists have more than one name, a good rule of thumb is to use whatever name is alredy in use on the site. In few cases should it be necessary to change a pre-established artist tag. If the artist does not already have a tag on the site, it is up to you to come up with a tag for that artist. In the case of artists on FurAffinity, oftentimes it is safe to use the artist's lowercase name, i.e. the last word in the URL of their FA userpage. With artists on Pixiv, generally it is acceptable to copy the name under their avatar, though ideally this name should be romanized. If a more widely-used representation of an artist's name is known, that name should preferably be used.</p>
+      </div>
+
+      <div class="section">
+        <h5>Character names</h5>
+        <p>In general, a character's first and last name should be included in tagging (e.g., <code>sue_sakamoto</code> rather than <code>sue</code>). This helps to prevent collisions between tag names.</p>
+        <p>In cases where a character's first name is not already in use as a tag, it is acceptable to create a tag alias aliasing the first name tag to the full name tag.</p>
+        <p>However, in cases where the first time belongs to two or more characters, the first name tag should be marked ambiguous.</p>
+      </div>
+
+      <div class="section">
+        <h5>Lowercase</h5>
+        <p>All tags are automatically made lowercase, so don't worry about using proper capitalization.</p>
+      </div>
+    </div>
+    
+    <div class="section" id="types">
+      <h4>Tag Types</h4>
+      <p>Tags can be typed. We support four tag types: artist, character, copyright, and species.</p>
+      <p>Tags of different types are colored differently than general tags:</p>
+      <ul id="tag-sidebar">
+        <li class="tag-type-general"><a>? General</a></li>
+        <li class="tag-type-artist"><a>? Artist</a></li>
+        <li class="tag-type-character"><a>? Character</a></li>
+        <li class="tag-type-copyright"><a>? Copyright</a></li>
+        <li class="tag-type-species"><a>? Species</a></li>
+      </ul>
+      <p>Setting a tag's type involves prefixing the tag with the tag type followed by a colon. Examples will be shown below.</p>
+      <p>Keep in mind that this only needs to be done <b>once</b> for any given tag. After setting a tag's type, that tag's type is set on every post. You need not set tag type every time you tag.</b>
+      <p>Also, all the tag types have short names for convenience. You will find them in the examples below.</p>
+
+      <div class="section">
+        <h5>Artist</h5>
+        <p>Artist tags identify the tag as the artist's name.</p>
+        <p>When tagging something, you can force that a tag is an artist tag by prefixing it with <code>artist:</code> (or <code>art:</code>). So, for example, <code>artist:bob_johnson</code> will tag the post with the tag <span class="tag-type-artist"><a>bob johnson</a></span>.</p>
+        <p>Images where an artist is not known may be given the tag <code>unknown_artist</code>. Though this is not required, it does increase the likelihood that someone will eventually find the picture and tag it with the appropriate artist name.</p>
+      </div>
+    
+      <div class="section">
+        <h5>Character</h5>
+        <p>Character tags identify the tag as a character. They work exactly like artist tags, only you prefix with "character" (or "char"). In the case of the names of Pokemon, Digimon, and other fictional species, please use the "species" prefix instead of "character".</p>
+      </div>
+      
+      <div class="section">
+        <h5>Copyright</h5>
+        <p>The copyright type indicates the tag represents an anime, a game, a novel, or some sort of copyrighted setting. For example, <code>copyright:pokemon</code>. Otherwise they work identically to character and artist tags, only you prefix with "copyright" instead (or "copy").</p>
+      </div>
+      
+      <div class="section">
+        <h5>Species</h5>
+        <p>As one would assume, these work just like the other tags, and represent the species depicted in a picture. To set a species tag, prefix the tag with "species:" or "spec:". Examples of species tags are <code>species:dog</code> and <code>species:pikachu</code>.</p>
+      </div>
+    
+      <div class="section">
+        <h5>Ambiguous</h5>
+        <p>Tag ambiguity is handled much in the same way that Wikipedia handles ambiguity. Users who search for an ambiguous tag are directed to a disambiguation page on the wiki, where they can clarify what they want to search for.</p>
+        <p>The flag for marking a tag as ambiguous is separate from the type. This means that an artist tag could be marked as ambiguous, for example. To mark a tag as ambiguous, prefix it with "ambiguous".</p>
+      </div>
+  
+<br /></div></div></div></div></div>
+<include href="footer.html" />

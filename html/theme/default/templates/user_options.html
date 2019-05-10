@@ -1,0 +1,106 @@
+<include href="header.html" />
+		<div class="content_frame">
+            <div class="altcontent">
+                <h4>Account Options</h4><br />
+              <form action="" method="post">              
+                <div class="option">
+
+                <h5>Thresholds</h5><br />
+                <table width="800" cellpadding="0" cellspacing="4">
+                <tr><td width="40%">
+                <label class="block">Comment Threshold</label>	<p>Any comment with a score below this will be ignored.</p>
+                </td><td>
+                <input type="text" name="cthreshold" value="{{ @comment_threshold }}"/>
+                </td></tr>
+                <tr><td>
+                <label class="block">Post Threshold</label><p>Any post with a score below this will be ignored.</p>
+                </td><td>
+                <input type="text" name="pthreshold" value="{{ @post_threshold }}"/>
+                </td></tr>
+                </table>
+
+                <h5>Blacklists</h5><br />
+                <i>You must have cookies and JavaScript enabled for filtering to work!<br />
+                Separate individual tags and users with spaces.<br />
+                Blacklists are case sensitive.</i><br /><br />
+                <table width="800" cellpadding="0" cellspacing="4">
+                <tr><td width="40%">
+                <label class="block">Tag Blacklist</label><p>Any post containing a blacklisted tag will be ignored. Note that you can also blacklist ratings.</p>
+                </td><td>
+                <textarea name="tags" rows="10" cols="50">{{ @tag_blacklist }}</textarea>
+                </td></tr>
+                <tr><td>
+                <label class="block">User Blacklist</label><p>Any post or comment from a blacklisted user will be ignored.</p>
+                </td><td>
+                <input type="text" name="users" value="{{ @user_blacklist }}"/>
+                </td></tr>
+				</table>
+
+                <h5>Tags</h5><br />
+                <table width="800" cellpadding="0" cellspacing="4">
+                <tr><td width="40%">
+                <label class="block">My Tags</label>
+                <p>These will be accessible when you add or edit a post.</p>
+                </td><td>
+                <textarea name="my_tags" rows="10" cols="50">{{ @tags }}</textarea>	
+                </td></tr>
+                </table>
+                
+                <h5>Email options</h5><br />
+                <table width="800" cellpadding="0" cellspacing="4">
+                <tr><td width="40%">
+                <label class="block">Email</label>
+                <p>Your email address, which is used for password resets (and notifications if enabled.)</p>
+                </td><td>
+                <input type="text" name="email" value="{{ @email }}" size="35" />	
+                </td></tr>
+                <tr><td>
+                <label class="block">Mail notifications</label>
+                <p>If enabled, sends notification via email when you receive a new mail.</p>
+                </td><td>
+                <select name="notify">
+                  <option value="0" {{ @notify1 }}>Disabled</option>
+                  <option value="1" {{ @notify2 }}>Enabled</option>
+                </select>	
+                </td></tr>
+                </table>
+                
+                <h5>Display Options</h5><br />
+                <table width="800" cellpadding="0" cellspacing="4">
+                <tr><td width="40%">
+                <label class="block">User Signature</label>
+                <p>This message is displayed on the bottom of your forum posts.</p>
+                </td><td>
+                <textarea name="signature" rows="5" cols="50">{{ @signature }}</textarea>
+                </td></tr>
+                <tr><td>
+                <label class="block">User Title</label>
+                <p>This title replaces the group name below your user name in forum posts.</p>
+                </td><td>
+                <input type="text" name="title" value="{{ @title }}" size="35"/>
+                </td></tr>
+                <tr><td>
+                <label class="block">API access</label>
+                <p>For developer access to the API to automate tasks.</p>
+                </td><td>
+                <select name="api_access">
+                  <option value="0" {{ @api_access1 }}>Disabled</option>
+                  <option value="1" {{ @api_access2 }}>Enable/Regenerate</option>
+                  <option value="2" {{ @api_access3 }}>Enabled</option>
+                </select>
+                <check if="{{ empty(@api_key) }}">
+                <false>
+                Key: <input type="text" name="api_key" value="{{ @api_key }}" size="35" />
+                </false>
+                </check>
+                </td></tr>
+                </table>
+                </div>
+                <div class="option">
+                <input type="submit" name="submit" value="Save"/>
+                </div>
+                </form>
+                <br />
+            </div>
+		</div>
+<include href="footer.html" />

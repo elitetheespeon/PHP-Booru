@@ -1,0 +1,94 @@
+<include href="header.html" />
+	<div class="content_frame">
+	<div class="altcontent">
+		<table class="highlightable" width="100%">  
+		<tr>
+	   		<th width=2%></th>
+	   		<th width="3%"></th>
+			<th width="42%">Title</th>
+			<th width="11%">Created by</th>
+			<th width="11%">Updated by</th>
+			<th width="11%">Updated</th>
+			<th width="7%">Responses</th>
+<check if="{{ @candelete || @canpin }}">
+			<th width="10%">Tools</th>
+</check>
+		</tr>
+<repeat group="{{ @threads }}" value="{{ @t }}">
+		<tr>
+	<check if="{{ @t.locked == 1 }}">
+	<true>
+			<td><span class="locked-topic"><img src="/theme/{{ @theme }}/icon/lock.png" alt="locked" title="locked" align="left"></span>&nbsp;</td>
+	</true>
+	<false>
+			<td>&nbsp;</td>
+	</false>
+	</check>
+	<check if="{{ @t.priority == 1 }}">
+	<true>
+			<td>Sticky: </td>
+	</true>
+	<false>
+			<td>&nbsp;</td>
+	</false>
+	</check>
+			<td><a href= "/forum/view/{{ @t.id }}">{{ @t.topic | raw }}</a>
+	<check if="{{ @t.replies > 20 }}">
+			<a href="/forum/view/{{ @t.id }}/{{ @t.lastpage }}"><span class="locked-topic"> last</span></a>
+	</check>
+			</td>
+			<td>{{ @t.authorname }}</td>
+			<td>{{ @t.last_updated_by_name }}</td>
+			<td>{{ @t.date_now | raw }}</td>
+			<td>{{ @t.replies }}</td>
+	<check if="{{ @t.priority == 0 }}">
+	<true>
+	    <check if="{{ @canpin }}">
+            <td><a href="/forum/edit/pin/{{ @t.id }}/{{ @PARAMS.page }}">Pin</a> | 
+	    </check>
+	</true>
+	<false>
+	    <check if="{{ @canpin }}">
+            <td><a href="/forum/edit/unpin/{{ @t.id }}/{{ @PARAMS.page }}">Unpin</a> | 
+	    </check>
+	</false>
+	</check>
+	<check if="{{ @candelete }}">
+			<a href="/forum/remove/topic/{{ @t.id }}/{{ @PARAMS.page }}">Delete</a></td> 
+	</check>
+		</tr>
+</repeat>
+		</table>
+        <div id="paginator">
+        {{ @pagebrowser | raw }}
+        </div>
+		<form method="post" action="/forum/add" id="new_topic" style="display:none">
+		<table>
+		<tr>
+			<td>Topic:<br/>
+			<input type="text" name="topic" value=""/>
+			</td>
+		</tr>
+		<tr>
+			<td>Post:<br />
+			<textarea name="post" rows="4" cols="6" style="width: 600px; height: 200px;"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td><input type="hidden" name="conf" id='conf' value="0"/>
+			</td>
+		</tr>
+		<tr>
+			<td><input type="submit" name="submit" value="Create topic"/>
+		</td>
+		</tr>
+		</table>
+		</form>
+		<script type="text/javascript">
+		//<![CDATA[
+		document.getElementById('conf').value=1;
+		//]]></script>
+	</div>
+	<br />
+	</div>
+<include href="footer.html" />

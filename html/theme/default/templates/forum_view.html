@@ -1,0 +1,108 @@
+<include href="header.html" />
+		<div class="content_frame">
+            <div class="forum">
+<repeat group="{{ @posts }}" value="{{ @p }}">
+                    <div class="post" id="{{ @p.id }}">
+                        <div class="post_author">
+                            <h6 class="author"><a href="/user/{{ @p.author }}">{{ @p.authorname }}</a></h6>
+							{{ @p.authortitle }}							
+							<div>
+    <check if="{{ @p.authoravatar }}">
+    <true>
+								<a href="/user/{{ @p.author }}"><img class="post_avatar" src="{{ @site_url }}{{ @thumbnail_folder_ava }}/{{ @p.author }}_{{ @p.authoravatar.md5 }}.{{ @p.authoravatar.file_ext }}" height="{{ @p.authoravatar.height }}" width="{{ @p.authoravatar.width }}" /></a>
+    </true>
+    <false>
+                                &nbsp;
+    </false>
+    </check>
+							</div>
+                        </div>
+                        <div class="post_content">
+							<div style="text-align:right;">
+								<span class="date">{{ @p.date_made | raw }}</span>
+							</div>
+						   <h6>{{ @p.title | raw }}</h6>
+                            <div class="post_body"><p>{{ @p.body | raw }}</p></div>
+                            <div class="post_signature">
+                                <hr></hr>
+								{{ @p.authorsignature | raw }}
+                            </div>
+                    		<div class="post_footer">
+    <check if="{{ @checked_user_id == @p.author || @canedit }}">
+    <true>
+                                <a href="#" onclick="showHide('c{{ @p.id }}'); return false;">Edit</a> | 
+    </true>
+    <false>
+                                <a href="">Edit</a>
+    </false>
+    </check>
+                                <a href="#" onclick="javascript:document.getElementById('reply_box').value=document.getElementById('reply_box').value+'[quote]{{ @p.authorname }} said:\r\n{{ @p.body_quoted }}[/quote]'; showHide('reply'); return false;">Quote</a>
+    <check if="{{ @candelete && @p.id !== p.creation_post }}">
+                                 | <a href="/forum/remove/post/{{ @PARAMS.id }}/{{ @p.id }}">Remove</a><br />
+    </check>
+    <check if="{{ @checked_user_id == @p.author || @canedit }}">
+                                <form method="post" action="/forum/edit/edit/{{ @PARAMS.id }}/{{ @p.id }}/{{ @pgnum }}" style="display:none" id="c{{ @p.id }}"><table><tr><td><input type="text" name="title" value="{{ @p.title | raw }}"/></td></tr><tr><td><textarea name="post" rows="4" cols="6" style="width: 450px; height: 150px;">{{ @p.body_normal | raw }}</textarea></td></tr><tr><td><input type="submit" name="submit" value="Edit"/></td></tr></table></form>
+    </check>
+                    		</div>
+                        </div>
+                    </div>
+</repeat>
+<check if="{{ @locked == false }}">
+                    <form method="post" action="/forum/add/post/{{ @PARAMS.id }}" style="display:none" id="reply">
+                    <div class="post" id="newpostreply">
+                        <div class="post_author">
+                            <h6 class = "author">
+        					<a href="/user/{{ @checked_user_id }}">{{ @checked_username }}</a></h6>
+        					
+        					<div>
+    <check if="{{ @selfavatar }}">
+    <true>
+                                <a href="/user/{{ @checked_user_id }}"><img class="post_avatar" src="{{ @site_url }}{{ @thumbnail_folder_ava }}/{{ @checked_user_id }}_{{ @selfavatar.md5 }}.{{ @selfavatar.file_ext }}" height="{{ @selfavatar.height }}" width="{{ @selfavatar.width }}" /></a>
+    </true>
+    <false>
+                                &nbsp;
+    </false>
+    </check>
+        					</div>
+                        </div>
+                        <div class="post_content">
+                            <div class="date"></div>
+                            <h6>Title: <input type="text" name="title" value=""/></h6>
+                            <div class="post_body">Body: <textarea id="reply_box" name="post" rows="4" cols="6" style="padding-left: 5px; padding-right: 5px; width: 450px; height: 200px;"></textarea></div>
+                            <div class="post_signature"></div>
+                    		<div class="post_footer">
+                        	<input type="submit" name="submit" value="Post"/>
+                            <input type="hidden" name="conf" id="conf" value="0"/>
+                            <input type="hidden" name="l" value="{{ @limit }}"/>
+                            </div>
+                        </div>
+                        <script type="text/javascript">
+                        //<![CDATA[
+                        document.getElementById('conf').value=1;
+                        //]]></script>
+                    </div>
+                    </form>
+</check>
+                    <div id="paginator">
+                    {{ @pagebrowser | raw }}
+                    </div>
+                    <center>
+                    <br /><br />
+<check if="{{ @locked == false }}">
+<true>
+                    <a href="#" onclick="showHide('reply'); return false;">Reply</a>
+    <check if="{{ @canlock }}">
+                     | <a href="/forum/edit/lock/{{ @PARAMS.id }}/{{ @pgnum }}">Lock topic</a>
+    </check>
+</true>
+<false>
+    <check if="{{ @canlock }}">
+                     | <a href="/forum/edit/unlock/{{ @PARAMS.id }}/{{ @pgnum }}">Unlock topic</a>
+    </check>
+</false>
+</check>
+            </div>
+            <br />
+        </div>
+    </div>
+<include href="footer.html" />

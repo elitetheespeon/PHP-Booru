@@ -1,0 +1,17 @@
+<div class="pagination">
+	<F3:check if="{{@pg.firstPage}}">
+        <a href="{{@BASE, @pg.route, @pg.prefix.@pg.firstPage}}" alt="First page">&lt;&lt;</a>
+    </F3:check>
+	<F3:check if="{{@pg.prevPage}}">
+        <a href="{{@BASE, @pg.route, @pg.prefix.@pg.prevPage}}" alt="Previous page">&lt;</a>
+    </F3:check>
+	<F3:repeat group="{{@pg.rangePages}}" value="{{@page}}">
+        <a href="{{@BASE, @pg.route, @pg.prefix.@page}}">{{@page}}</a>
+	</F3:repeat>
+	<F3:check if="{{@pg.nextPage}}">
+        <a href="{{@BASE, @pg.route, @pg.prefix.@pg.nextPage}}" alt="Next page">&gt;</a>
+    </F3:check>
+	<F3:check if="{{@pg.lastPage}}">
+        <a href="{{@BASE, @pg.route, @pg.prefix.@pg.lastPage}}" alt="Last page">&gt;&gt;</a>
+    </F3:check>
+</div>

@@ -1,0 +1,32 @@
+<include href="admin_header.html" />
+<check if="{{ @secondstep }}">
+<true>
+		<div class="content">
+          Make note that banning using this tool will check the whole database for all IP addresses associated with this account. This will take a while if you have a <b>really</b> big database. Even then this will take forever. Just sit back.<br /><br />
+          <form method="post" action="">
+          <table><tr><td>			
+          User:</td><td><input type="text" value="{{ @userresult.user }}" size="80" disabled /></td></tr>
+          <tr><td>
+          Reason:</td><td><input type="text" name="ban_reason" value="" size="80" /></td></tr>
+          <tr><td></td><td>
+          <input type="submit" value="Add Ban" /></td><tr></table>
+          </form>
+          <div class="cl"></div>
+		</div>
+       </div>
+</true>
+<false>
+    	<div class="content">
+          Make note that banning using this tool will check the whole database for all IP addresses associated with this account. This will take a while if you have a <b>really</b> big database. Even then this will take forever. Just sit back.<br /><br />
+          <form method="post" action="">
+          <table><tr><td>			
+          User:</td><td><input type="text" name="user_id" size="80" /></td></tr>
+          <tr><td></td><td>
+          <input type="submit" value="Add Ban" /></td><tr></table>
+          </form>
+          <div class="cl"></div>
+    	</div>
+       </div>
+</false>
+</check>
+<include href="footer.html" />

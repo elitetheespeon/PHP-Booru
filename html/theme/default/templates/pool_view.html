@@ -1,0 +1,21 @@
+<include href="header.html" />
+	<div class="content_frame">
+    <div class="altcontent">
+    <h4>{{ @poolinfo.0.name }}</h4><br />
+    <span>{{ @poolinfo.0.description }}</span><br />
+<check if="{{ count(@posts) == 0 }}">
+<true>
+            <h1>{{ @t_notfound }}</h1>
+</true>
+<false>
+    <repeat group="{{ @posts }}" value="{{ @p }}">
+            <span class="thumb" id="p{{ @p.id }}"><a id="p{{ @p.id }}" href="/post/view/{{ @p.id }}"><img class="{{ @p.imageclass }}" src="{{ @p.imagestr }}" alt="post" border="0" title="{{ @p.tags }} score:{{ @p.score }} rating:{{ @p.rating }}"/></a></span>
+    </repeat>
+</false>
+</check>
+		</div><br /><br /><div id='paginator'>
+        {{ @pagebrowser | raw }}
+        </div>
+		<div class="cl"></div>
+		</div>
+<include href="footer.html" />

@@ -1,0 +1,28 @@
+<include href="header.html" />
+		<div class="content_frame">
+            <div class="altcontent">	
+                <h4>Avatar management</h4>
+<check if="{{ @info_output }}">
+                <br /><h4 style="error">{{ @info_output | raw }}</h4><br />
+</check>
+<check if="{{ @info_error }}">
+                <br /><h4 style="error">{{ @info_error | raw }}</h4><br />
+</check>
+                <form method="post" target="" enctype="multipart/form-data">
+            	<table><tr>
+            	  <td width="15%"><div align="right">
+            	  <label for="upload">New Avatar:<br /></label>
+                  &nbsp;</div>
+            	  <td width="85%"><input name="upload" type="file" size="50" />
+            	  <input type="submit" name="submit" value="Upload" />
+<check if="{{ @avacheck !== 0 }}">
+            	  <tr>
+                  <td><div align="right">Current Avatar:</div></td>
+            	  <td><img src="{{ @site_url }}{{ @thumbnail_folder_ava }}/{{ @checked_user_id }}_{{ @avainfo.md5 }}.{{ @avainfo.file_ext }}" /></td></tr>
+</check>
+            	</table>
+            	</form>
+                &nbsp;
+            </div>
+        </div>
+<include href="footer.html" />

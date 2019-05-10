@@ -1,0 +1,26 @@
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>{{ @site_url3 }}</title>
+  <link>{{ @site_url }}</link>
+  <description>{{ @site_url3 }}</description>
+  <generator>{{ @site_url3 }}</generator>
+  <atom:link rel="next" href="{{ @site_url }}cooliris/{{ urlencode(@query) }}/{{ @next }}" />
+<repeat group="{{ @posts }}" value="{{ @p }}">
+  <item>
+    <check if="{{ @p.title == '' }}">
+    <true>
+        <title>Post #{{ @p.id }}</title>
+    </true>
+    <false>
+        <title>{{ @p.title }}</title>
+    </false>
+    </check>
+        <link>{{ @site_url }}post/view/{{ @p.id }}</link>
+        <guid>{{ @site_url }}images/{{ @p.hash }}.{{ @p.ext }}</guid>
+        <media:description>{{ @p.description }}</media:description>
+        <media:thumbnail url="{{ @site_url }}thumbnails/{{ @p.hash }}.jpg" />
+        <media:content url="{{ @site_url }}images/{{ @p.hash }}.{{ @p.ext }}" />
+  </item>
+</repeat>
+</channel>
+</rss>

@@ -1,0 +1,93 @@
+<include href="header.html" />
+<div class="content_frame">
+    <div class="altcontent">
+        <div id="comment-list2">
+            <script type="text/javascript">
+            	//<![CDATA[
+            	var posts = {}; posts.comments = {}; posts.ignored = {}; posts.totalcount = {}; posts.tags = {}; posts.rating = {}; posts.score = {}; posts.rating[0] = ''; var phidden = {}; var cthreshold = parseInt(readCookie('comment_threshold')) || 0; var users = readCookie('user_blacklist').split(/[, ]|%20+/g);
+            	//]]>
+            </script>
+            
+<repeat group="{{ @comments }}" value="{{ @c }}">             
+            <div class="commpost" id="p{{ @c.post_id }}">
+                <script type="text/javascript">
+        			//<![CDATA[
+        			posts.tags[{{ @c.post_id }}] = '{{ @c.tagsjs }}'
+        			posts.rating[{{ @c.post_id }}] = '{{ @c.rating }}'
+        			posts.score[{{ @c.post_id }}] = '{{ @c.score }}'		
+        			//]]>
+        		</script>
+    <check if="{{ @c.lastpid }}">
+                <script type="text/javascript">
+					//<![CDATA[
+					posts.totalcount[{{ @c.lastpid }}] = '{{ @c.ptcount }}'
+					//]]>
+				</script>
+    </check>
+               
+               
+                <div class="col1">
+                    <a href="/post/view/{{ @c.post_id }}">
+                        <img src="{{ @c.imagestr }}" border="0" class="preview" title="{{ @c.tags }}" alt="thumbnail"/>
+                    </a>
+                </div>
+                
+                
+                
+                
+                <div class="col2">
+                    <repeat group="{{ @c.comment }}" value="{{ @cm }}">             
+                        <div class="comment" id="c{{ @cm.id }}">
+                            <h6 class="author"><a href="/user/{{ @cm.user }}">{{ @cm.cname }}</a></h6>
+                    
+                        <h6 class="comment-header">Posted {{ @cm.posted_at }}
+        <check if="{{ @cm.spam == false }}">
+        <true>
+                            (<a id="rc{{ @cm.id }}"></a><a href="#" id="rcl{{ @cm.id }}" onclick="Javascript:spam('comment','{{ @cm.id }}')">Flag for deletion</a>)
+                        </h6>
+        </true>
+        <false>
+                            (<b>Already flagged</b>)
+                        </h6>
+        </false>
+        </check>
+                        <div id="cbody{{ @cm.id }}"><p>{{ @cm.comment | raw }}</p></div>
+                    </div>
+                    
+			        <script type="text/javascript">
+		        	    //<![CDATA[
+		        	    posts.comments[{{ @cm.id }}] = {'score':{{ @cm.score }}, 'user':'{{ @cm.userjs }}', 'post_id':'{{ @c.post_id }}'}
+		        	    //]]>
+		        	</script>
+	</repeat>
+                </div>
+
+                <div class="col3" align="right">
+                    <ul class="post-info">
+                        <li>{{ @c.pat }}</li><li>rating:{{ @c.rating }}</li><li>user:{{ @c.user }}</li>
+        <repeat group="{{ @c.taglist }}" value="{{ @t }}">
+                        <li><span class="{{ @t.color }}"><a href="/post/list/{{ urlencode(@t.name) }}">{{ @t.name }}</a></span></li>
+        </repeat>
+                    </ul>
+                </div>
+            </div>
+
+</repeat>
+        </div>
+        <script type="text/javascript">
+        	//<![CDATA[
+        	posts.totalcount['.$lastpid.'] = \''.$ptcount.'\'
+        	//]]>
+        </script>
+        <br /><a href="#" id="ci" onclick="showHideCommentListIgnored(); return false;">(0 hidden)</a><br /><br />
+        <script type="text/javascript">
+        	//<![CDATA[
+        	filterCommentList(\''.$ccount.'\')
+        	//]]>
+        </script>
+        <div id="paginator">
+            {{ @pagebrowser | raw }}
+        </div>
+    </div>
+</div>
+<include href="footer.html" />

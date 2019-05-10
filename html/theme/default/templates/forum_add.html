@@ -1,0 +1,27 @@
+<include href="header.html" />
+<div class="content_frame">
+<div class="altcontent">
+<form method="post" action="">
+	<table><tr><td>
+	Topic:<br/>	
+	<input type="text" name="topic" value=""/>
+	</td></tr>
+	<tr><td>
+	Post:<br />
+	<textarea name="post" rows="4" cols="6" style="width: 600px; height: 200px;"></textarea>
+	</td></tr>
+	<tr><td>
+	<input type="hidden" name="conf" id='conf' value="0"/>
+	</td></tr>
+	<tr><td>
+	<input type="submit" name="submit" value="Create topic"/>
+	</td></tr></table></form>
+	<script type="text/javascript">
+	//<![CDATA[
+	document.getElementById('conf').value=1;
+	//]]>
+	</script>
+<br />
+</div>
+</div>
+<include href="footer.html" />

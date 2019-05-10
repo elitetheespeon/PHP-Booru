@@ -1,0 +1,39 @@
+<include href="admin_header.html" />
+	<div class="content">  
+	<h2>Dmail viewer</h2>
+    <br />
+    <!-- First Row of Table (Labels) -->
+		<table class="highlightable" width="80%">  
+		<tbody>
+            <tr>
+		      <th></th>
+              <th>From</th>
+              <th>To</th>
+		      <th>Title</th>
+		      <th>Date</th>
+<repeat group="{{ @mail }}" value="{{ @m }}">
+	<check if="{{ @m.has_seen == 0 }}">
+	<true>
+		<tr class="unread">
+            <td class="unreadicon">&nbsp;</td>
+	</true>
+	<false>
+        <tr>
+            <td class="readicon">&nbsp;</td>
+	</false>
+	</check>
+            <td><a href="/user/{{ @m.from_id }}">{{ @m.from_username }}</a></td>
+            <td><a href="/user/{{ @m.to_id }}">{{ @m.to_username }}</a></td>
+            <td><a href= "/admin/mail_view/{{ @m.id }}">{{ @m.title }}</a></td>
+			<td>{{ @m.date_now | raw }}</td>
+		</tr>
+</repeat>
+		</table>
+        <div id="paginator">
+        {{ @pagebrowser | raw }}
+        </div>
+	</div>
+	<div class="cl"></div>
+	<br />
+	</div>
+<include href="footer.html" />

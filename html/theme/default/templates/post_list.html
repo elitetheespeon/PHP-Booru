@@ -1,0 +1,75 @@
+<include href="header.html" />
+		<div class="content_frame">
+			<div class="sidebar">
+        <!--This is the intialization part for the CData that links to the JS further down. Without this CData will NOT initialize the POSTS variable. -->
+        <script type="text/javascript">
+		//<![CDATA[
+		var posts = {}; var pignored = {};
+		//]]>
+		</script>
+        <!-- sidebar code goes here -->
+            <!-- Ignore the rest of this -->
+				<!-- Search -->
+				<br />
+                <div id="sear" class="block">
+                    
+					<h5>Search</h5>
+                    
+                    <form action="/search" method="post">
+                        <input id="tags" name="tags" size="20" value="{{ @PARAMS.tags }}" type="text" autocomplete="off" />
+                        <div id="autocomplete_dd" class="autocomplete"></div>
+                        <script type="text/javascript">
+                        new Ajax.Autocompleter('tags','autocomplete_dd',' /post/search/autocomplete', {
+                        tokens: 'minChars: 1'
+                        })
+                        </script>
+                        
+                        <input name="commit" type="submit" value="Search" />
+                        <br /><br />
+                    </form>
+                </div>
+                <!-- BlackList -->
+                <div id="blacklist"><a id="pi" href="#" onclick="showHideIgnored('0','pi'); return false;"></a></div>
+                <br />
+				<!-- Tags -->
+				<div id="tagl" class="block">
+					<h5>Tags</h5>
+					<ul class="tag-sidebar">
+<repeat group="{{ @tags }}" value="{{ @t }}">
+                        <li><span class="post-count"><a href="/wiki/title/{{ urlencode(@t.name) }}">?</a></span> <span class="{{ @t.color }}"><a href="/post/list/{{ urlencode(@t.name) }}">{{ @t.name }}</a></span><span class="post-count"> {{ @t.count }}</span></li>
+</repeat>
+   					</ul>
+				</div>
+				<!-- End Tags -->
+				<div class="block"></div>
+			</div>
+			<div class="content">
+                    <!-- DISPLAY POSTS -->
+<check if="{{ count(@posts) == 0 }}">
+    <true>
+                <h1>{{ @t_notfound }}</h1>
+    </true>
+    <false>
+        <repeat group="{{ @posts }}" value="{{ @p }}">
+                <span class="thumb" id="p{{ @p.id }}"><a id="p{{ @p.id }}" href="/post/view/{{ @p.id }}"><img class="{{ @p.imageclass }}" src="{{ @p.imagestr }}" alt="post" border="0" title="{{ @p.tags }} score:{{ @p.score }} rating:{{ @p.rating }}"/></a>
+				
+                <script type="text/javascript">
+	           //<![CDATA[
+                posts[{{ @p.id }}] = {'tags':'{{ @p.tags }}'.split(/ /g), 'rating':'{{ @p.rating }}', 'score':{{ @p.score }}, 'user':'{{ @p.owner }}'}
+                //]]>
+				</script></span>
+        </repeat>
+    </false>
+</check>
+				    <!-- END DISPLAY POSTS -->
+			</div><br /><br /><div id='paginator'>
+			<script type="text/javascript">
+			//<![CDATA[
+			filterPosts(posts)
+			//]]>
+			</script>
+            {{ @pagebrowser | raw }}
+            </div>
+			<div class="cl"></div>
+		</div>
+<include href="footer.html" />

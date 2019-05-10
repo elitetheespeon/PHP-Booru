@@ -1,0 +1,108 @@
+<include href="admin_header.html" />
+<h4>{{ @error1 }}</h4>
+<check if="{{ @secondstep }}">
+<true>
+ <div class="content">
+	<form method="post" action="">
+	<table class="highlightable" style="font-size: 12px; width: 100%;"><tr><td>
+	Group: {{ @groupinfo.group_name }}<br />
+	</td></tr>
+	<tr><td>
+	Members of this group can delete posts?<br />
+	<input type="checkbox" name="delete_posts" <check if="{{ @groupinfo.delete_posts }}">checked=true</check> />
+	</td></tr>
+	<tr><td>
+	Members of this group can delete comments?<br />
+	<input type="checkbox" name="delete_comments" <check if="{{ @groupinfo.delete_comments }}">checked=true</check> />
+	</td></tr>
+	<tr><td>
+	Members of this group can access admin panel?<br />
+	<input type="checkbox" name="admin_panel" <check if="{{ @groupinfo.admin_panel }}">checked=true</check> />
+	</td></tr>
+	<tr><td>
+	Default group? (group assigned to members on sign up.)<br />
+	<input type="checkbox" name="is_default" <check if="{{ @groupinfo.default_group }}">checked=true</check> />
+	</td></tr>
+	<tr><td>
+	Members of this group can revert notes?<br />
+	<input type="checkbox" name="rnotes" <check if="{{ @groupinfo.reverse_notes }}">checked=true</check> />
+	</td></tr>
+	<tr><td>
+	Members of this group can revert tags?<br />
+	<input type="checkbox" name="rtags" <check if="{{ @groupinfo.reverse_tags }}">checked=true</check> />
+	</td></tr>
+	<tr><td>
+	Members of this group can approve posts?<br />
+	<input type="checkbox" name="appposts" <check if="{{ @groupinfo.approve_posts }}">checked=true</check> />
+	</td></tr>
+	<tr><td>
+	Members of this group can delete forum posts?<br />
+	<input type="checkbox" name="fposts" <check if="{{ @groupinfo.delete_forum_posts }}">checked=true</check> />
+	</td></tr>
+	<tr><td>
+	Members of this group can delete forum topics?<br />
+	<input type="checkbox" name="ftopics" <check if="{{ @groupinfo.delete_forum_topics }}">checked=true</check> />
+	</td></tr>
+	<tr><td>
+	Members of this group can lock forum topics?<br />
+	<input type="checkbox" name="flock" <check if="{{ @groupinfo.lock_forum_topics }}">checked=true</check> />
+	</td></tr>
+	<tr><td>
+	Members of this group can edit all forum posts?<br />
+	<input type="checkbox" name="fedit" <check if="{{ @groupinfo.edit_forum_posts }}">checked=true</check> />
+	</td></tr>
+	<tr><td>
+	Members of this group can pin forum topics?<br />
+	<input type="checkbox" name="fpin" <check if="{{ @groupinfo.pin_forum_topics }}">checked=true</check> />
+	</td></tr>
+	<tr><td>
+	Members of this group can alter, create and remove notes?<br />
+	<input type="checkbox" name="anotes" <check if="{{ @groupinfo.alter_notes }}">checked=true</check> />
+	</td></tr>
+	<tr><td>
+	Members of this group can upload new posts?<br />
+	<input type="checkbox" name="cupload" <check if="{{ @groupinfo.can_upload }}">checked=true</check> />
+	</td></tr>
+	<tr><td>
+	Members of this group is an admin? <span style="color: #ff0000;">Be careful with this! Make sure it is unchecked unless you want this account to be admin!</span><br />
+	<input type="checkbox" name="iadmin" <check if="{{ @groupinfo.is_admin }}">checked=true</check> />
+	</td></tr>
+	<tr><td>
+	<input type="hidden" name="check" value="1"/>
+	</td></tr>
+	<tr><td>
+	<input type="hidden" name="group" value="{{ @gname }}"/>
+	</td></tr>
+	<tr><td>
+	<input type="submit" name="submit" value="Save"/>
+	</td></tr></table>
+	</form>
+	<br />
+	If you are deleting a group, make sure there are no users in it or they will not have a group assigned to their account and a lot of stuff will break.
+	<br />
+	<a href="/admin/edit_group/{{ @groupinfo.id }}">Delete Group! (NO UNDO OR CONFIRMATION!)</a>
+	<div class="cl"></div>
+ </div>
+</true>
+<false>
+ <div class="content">	
+    <form method="post" action="">
+	<table><tr><td>
+	Group name:<br />
+	<select name="group_name">
+	<option>Select a group</option>
+	<repeat group="{{ @groupnames }}" value="{{ @g }}">
+		<check if="{{ @g.id !== 1 && @g.id > 1 }}">
+				<option value="{{ @g.id }}">{{ @g.group_name }}</option>
+		</check>
+	</repeat>
+	</select></td></tr>
+	<tr><td>
+	<input type="submit" name="submit" value="Submit"/>
+	</td></tr></table></form>
+    <div class="cl"></div>
+ </div>
+</false>
+</check>
+</div>
+<include href="footer.html" />

@@ -1,0 +1,75 @@
+<include href="admin_header.html" />
+          <div class="content">
+           <h2>Site Log</h2>
+              <br />
+              
+            <form name="searchlogs" method="post" action="">
+                
+            Search: <input type="text" id="search" name="search" value="<?php echo $search; ?>" autocomplete="off" /> By:   
+            <select name="type">
+              <option value="1" {{ @type1 }}>Username</option>
+              <option value="2" {{ @type2 }}>IP Address</option>
+              <option value="3" {{ @type3 }}>Post ID</option>
+            </select>
+            
+            <div id="autocomplete_dd" class="autocomplete"></div>
+            <script type="text/javascript">
+            jQuery(document).ready(function () {
+                            formtype = jQuery('select[name="rating"]').val();
+                        });
+            jQuery('select[name="type"]').on("keyup change", function() {
+               formtype = jQuery('select[name="type"]').val();
+            });
+                            var formtype = jQuery('select[name="type"]').val();
+                            new Ajax.Autocompleter('search','autocomplete_dd','/admin/log_view/autocomplete', {
+                            parameters: 'type='+formtype
+            });
+            </script>
+            <input type="submit" value="Search" />
+            </form>
+            
+            <br />
+              <table class="highlightable">
+                <tr>
+                 <td><u> Date</u></td>
+                 <td><u> Username</u></td>
+                 <td><u> IP Address</u></td>
+                 <td><u> Action</u></td>
+                 <td><u> Result</u></td>
+                 <td><u> Alt ID</u></td>
+                </tr>
+<repeat group="{{ @loginfo }}" value="{{ @l }}">
+                <tr>
+        	     <td> {{ @l.date }}</td>
+    <check if="{{ @l.user == null }}">
+    <true>
+                 <td> <i>Anonymous</i></td>   
+    </true>
+    <false>
+                 <td> <a href="/user/{{ @l.uid }}">{{ @l.user }}</a></td>   
+    </false>
+    </check>
+        	     <td> {{ @l.ip }}</td>
+        	     <td> {{ @l.action }}</td>
+    <check if="{{ @l.action == 'POST_VIEW' }}">
+                 <td> <a href="/post/view/{{ @l.result }}">{{ @l.result }}</a></td>
+    </check>
+    <check if="{{ @l.action == 'POST_LIST' }}">
+    <true>
+                 <td> <a href="/post/list/{{ @l.result }}">{{ @l.result }}</a></td>
+    </true>
+    <false>
+                 <td> {{ @l.result }}</td>   
+    </fasle>
+    </check>
+                 <td> {{ @l.cid }}</td>
+                </tr>
+</repeat>
+              </table>
+                <div id="paginator">
+                {{ @pagebrowser | raw }}
+                </div>
+              <div class="cl"></div>
+          </div>
+       </div>
+<include href="footer.html" />

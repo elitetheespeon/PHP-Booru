@@ -1,0 +1,25 @@
+# Enable rewrite engine and route requests to framework
+RewriteEngine On
+
+# Some servers require you to specify the `RewriteBase` directive
+# In such cases, it should be the path (relative to the document root)
+# containing this .htaccess file
+#
+# RewriteBase /
+
+RewriteRule ^(tmp)\/|\.ini$|/\.git - [R=404]
+
+# Fix for search engine infinite recursion loop
+RewriteCond %{QUERY_STRING} ^/\d\/\d\/
+RewriteRule .* %{REQUEST_URI}? [L,R=301]
+
+# Fix to rewrite old URL style
+RewriteCond %{REQUEST_URI} &tags=(\w+) [NC]
+RewriteRule .* https://%{HTTP_HOST}/post/list/%1 [L,R=301]
+
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule .* index.php [L,QSA]
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+php_value short_open_tag 0

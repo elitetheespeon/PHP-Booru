@@ -1,0 +1,62 @@
+<include href="header_min.html" />
+        		<div class="content_frame">
+            <div class="altcontent_main">
+            <br />
+<!-- Start Logo -->
+<check if="{{ file_exists('theme/'.@theme.'/logo.jpg') }}">
+<true>
+            <a href="/post/all"><img src="theme/{{ @theme }}/logo.jpg" border="0" alt="0"/></a>
+</true>
+<false>
+            <h1 style="font-size: 52px; margin-top: 1em;"><a href="post/all">{{ @site_url3 }}</a></h1>
+</false>
+</check>
+<!-- End Logo -->
+<!--Build the links -->
+	<div style="margin-bottom: 1em;" id="links">
+		<a href="/post/all/" title="A paginated list of every post">Posts</a>
+		<a href="/comment/list">Comments</a>
+<check if="{{ !@user->check_log() }}">
+        <a href="/user/home">Login</a>
+</check>
+        <!--a href="/favorites/list">Favorites</a>-->
+        <a href="/post/random">Random</a>
+	</div>
+<!--End Links -->
+	<div style="margin-bottom: 2em;">
+        <form action="/search" method="post">
+            <input id="tags" name="tags" size="20" type="text" autocomplete="off" />
+            <div id="autocomplete_dd" class="autocomplete"></div>
+            <script type="text/javascript">
+            new Ajax.Autocompleter('tags','autocomplete_dd','/post/search/autocomplete', {
+            tokens: ' '
+            })
+            </script>
+            <br />
+            <input name="commit" type="submit" value="Search" />
+            <br /><br />
+        </form>
+	</div>
+		<div style="margin-bottom: 1em;">
+<check if="{{ file_exists('theme/'.@theme.'/icon/warning.gif') }}">
+<true>
+            <p style="font-size: 80%; margin: 2em;"><img src="theme/{{ @theme }}/icon/warning.gif" alt="<!>"> Must be 18+ to enter.</p>
+</true>
+<false>
+            <p style="font-size: 80%; margin: 2em;"><img src="theme/default/frontpage/warning.gif" alt="<!>"> Must be 18+ to enter.</p>
+</false>
+</check>
+<repeat group="{{ @digits }}" value="{{ @digit }}">
+            <img src="theme/{{ @theme }}/counter/{{ @digit }}.gif" border="0" alt="{{ @digit }}"/>
+</repeat>
+            <p style="font-size: 80%; margin: 2em;">Serving {{ @totalposts }} posts!</p>
+	</div>
+	<div style="font-size: 80%; margin-bottom: 2em;">	
+
+	<p><a href="mailto:{{ @site_email }}">Contact</a> | 
+    <a href="/terms">Terms of Service</a> | Running {{ @site_url3 }} v{{ @ver }} </p>
+    </div>
+    <br />
+</div>
+        </div>
+<include href="footer.html" />

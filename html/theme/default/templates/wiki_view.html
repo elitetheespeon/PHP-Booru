@@ -1,0 +1,42 @@
+<include href="header.html" />
+<div class="content_frame">
+	<div class="sidebar">
+		<div id="tagl" class="block">
+			<h5>Recently Updated</h5>
+			<ul class="tag-sidebar">
+<repeat group="{{ @recent }}" value="{{ @r }}">
+    <check if="{{ @r.title !== null }}">
+				<li><span class="{{ @r.color }}"><a href="/wiki/view/{{ @r.id }}">{{ @r.title }}</a></span></li>
+    </check>                   
+</repeat>
+			</ul>
+		</div>
+	</div>
+			
+	<div class="content">
+		<div id="notice" class="notice"></div>
+		<div id="wiki" class="wiki">
+			<h2 class="wiki-title">{{ @title }}</h2>
+			<div id = "wikicontent">
+				{{ @wikibody | raw }}
+			</div>
+<check if="{{ count(@posts) !== 0 }}">
+			<div id="posts">
+				<h4>Recent Posts</h4>
+	<repeat group="{{ @posts }}" value="{{ @p }}">
+                <span class="thumb" id="p{{ @p.id }}"><a id="p{{ @p.id }}" href="/post/view/{{ @p.id }}"><img class="{{ @p.imageclass }}" src="{{ @p.imagestr }}" alt="post" border="0" title="{{ @p.tags }} score:{{ @p.score }} rating:{{ @p.rating }}"/></a>
+                	<script type="text/javascript">
+	           			//<![CDATA[
+                		posts[{{ @p.id }}] = {'tags':'{{ @p.tags }}'.split(/ /g), 'rating':'{{ @p.rating }}', 'score':{{ @p.score }}, 'user':'{{ @p.owner }}'}
+                		//]]>
+				</script></span>
+	</repeat>
+			</div>
+</check>
+		</div>
+	</div>
+	<br />
+
+	<div class="cl"></div>
+</div>
+<include href="footer.html" />

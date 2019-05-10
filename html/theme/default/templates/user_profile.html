@@ -1,0 +1,105 @@
+<include href="header.html" />
+	<div class="content_frame">
+        <div class="altcontent">
+<check if="{{ @avatar }}">
+<true>
+		<a href="/user/{{ @userinfo.id }}"><img class="post_avatar" src="{{ @site_url }}{{ @thumbnail_folder_ava }}/{{ @userinfo.id }}_{{ @avatar.md5 }}.{{ @avatar.file_ext }}" height="{{ @avatar.height }}" width="{{ @avatar.width }}" /></a>
+</true>
+<false>
+		&nbsp;
+</false>
+</check>
+		<h2>{{ @userinfo.user }}</h2><br />
+<check if="{{ @user->gotpermission('is_admin') }}">
+            <p><a href="/admin/ban_user/{{ @userinfo.id }}">Ban User</a></p>
+</check>
+<check if="{{ @user->check_log() }}">
+            <p><a href="/mail/send/{{ @userinfo.id }}">Send Mail</a></p>
+</check>
+			<div>
+				<table width="100%" class="highlightable">
+	<tr>
+	  <td width="20%"><strong>Join Date</strong></td>
+	  <td width="80%">{{ @signupdate }}</td>
+	</tr>
+	<tr>
+	  <td><strong>Level</strong></td>
+	  <td>{{ @groupname }}</td>
+	</tr>
+	<tr>
+	  <td><strong>Posts</strong></td>
+	  <td><a href="/post/list/user:{{ @userinfo.id }}">{{ @userinfo.post_count }}</a></td>
+	</tr>
+	<tr>
+	  <td><strong>Favorites</strong></td>
+	  <td><a href="/favorites/view/{{ @userinfo.id }}">{{ @fcount }}</a></td>
+	</tr>
+	<tr>
+	  <td><strong>Comments</strong></td>
+	  <td>{{ @userinfo.comment_count }}</td>
+	</tr>
+	<tr>
+	  <td><strong>Tag Edits</strong></td>
+	  <td><a href="/user/tag_edits/{{ @userinfo.id }}">{{ @userinfo.tag_edit_count }}</a></td>
+	</tr>
+	  <td><strong>Forum Posts</strong></td>
+	  <td>{{ @userinfo.forum_post_count }}</td>
+	</tr>
+  </table>
+</div>
+	<script type="text/javascript">
+	//<![CDATA[
+		posts = {}; pignored = {};
+	//]]>
+	</script>
+	<div style="display:none">
+		<a href="#" id="blacklist-count"></a>
+		<a href="#" id="blacklisted-sidebar"></a>
+	</div>
+<div style="margin-bottom: 1em; clear: both;">
+  <h4>Recent Favorites <a href="/favorites/view/{{ @userinfo.id }}">&raquo;</a></h4>
+  <div>
+<check if="{{ count(@favinfo) == 0 }}">
+<true>
+        <h1>{{ @t_notfound }}</h1>
+</true>
+<false>
+    <repeat group="{{ @favinfo }}" value="{{ @f }}">
+		<span class="thumb" id="p{{ @f.id }}"><a href="/post/view/{{ @f.id }}"><img src="{{ @f.imagestr }}" alt="{{ @f.tags }} rating:{{ @f.rating }} score:{{ @f.score }} user:{{ @user->get_username(@f.owner) }}" class="preview" title="{{ @f.tags }} rating:{{ @f.rating }} score:{{ @f.score }} user:{{ @user->get_username(@f.owner) }}"></a></span>
+		<script type="text/javascript">
+		//<![CDATA[
+			posts['{{ @f.id }}'] = {'tags':'{{ @f.tagsjs }}'.split(/ /g), 'rating':'{{ @f.ratingjs }}', 'score':'{{ @f.score }}', 'user':'{{ @f.ownerjs }}'}
+		//]]>
+		</script>
+    </repeat>
+</false>
+</check>
+</div>
+</div>
+<div style="margin-bottom: 1em; clear: both;">
+<h4>Recent Uploads <a href="/post/list/user:{{ @userinfo.id }}">&raquo;</a></h4>
+<div>
+<check if="{{ count(@upinfo) == 0 }}">
+<true>
+        <h1>{{ @t_notfound }}</h1>
+</true>
+<false>
+    <repeat group="{{ @upinfo }}" value="{{ @u }}">
+		<span class="thumb" id="p{{ @u.id }}"><a href="/post/view/{{ @u.id }}"><img src="{{ @u.imagestr }}" alt="{{ @u.tags }} rating:{{ @u.rating }} score:{{ @u.score }} user:{{ @user->get_username(@u.owner) }}" class="preview" title="{{ @u.tags }} rating:{{ @u.rating }} score:{{ @u.score }} user:{{ @user->get_username(@u.owner) }}"></a></span>
+		<script type="text/javascript">
+		//<![CDATA[
+			posts['{{ @u.id }}'] = {'tags':'{{ @u.tagsjs }}'.split(/ /g), 'rating':'{{ @u.ratingjs }}', 'score':'{{ @u.score }}', 'user':'{{ @u.ownerjs }}'}
+		//]]>
+		</script>
+    </repeat>
+</false>
+</check>
+    <script type="text/javascript">
+	filterPosts(posts)
+	</script>
+	</div></div>
+        <div style="margin-bottom: 1em; clear: both;"></div>
+        <br />
+        </div>
+	</div>
+<include href="footer.html" />

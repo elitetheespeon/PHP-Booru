@@ -1,0 +1,15 @@
+<include href="header_min.html" />
+        	<div class="content_frame">
+                <div class="altcontent_main">
+            <br />
+<check if="{{ @user->check_log() }}">
+<true>
+    <iframe src="https://discordapp.com/widget?id=0000000000000000&theme=dark&username={{ urlencode(@checked_username) }}" width="400" height="800" allowtransparency="true" frameborder="0"></iframe>
+</true>
+<false>
+    <iframe src="https://discordapp.com/widget?id=0000000000000000&theme=dark" width="400" height="800" allowtransparency="true" frameborder="0"></iframe>
+</false>
+</check>
+                </div>
+            </div>
+<include href="footer.html" />

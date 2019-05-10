@@ -1,0 +1,27 @@
+<include href="header.html" />
+		<div class="content_frame">
+          <div class="sidebar">
+		    <h5>Moderator Tools:</h5><br />
+      		<ul id="tag-sidebar">
+		      <li><a href="/admin/reported_posts" title="View the reported posts by users. I hope you do not see many here...">Reported Posts</a></li>
+		      <li><a href="/admin/reported_comments" title="View the reported comments as well as other info related to the comment.">Reported Comments</a></li>
+		      <li><a href="/admin/alias" title="Approve or reject pending aliases.">Alias Approve/Reject</a></li>
+		    </ul>
+		    <br />
+<check if="{{ @user->gotpermission('admin_panel') }}">
+		    <h5>Admin Tools:</h5><br />
+		    <ul id="tag-sidebar">
+		      <li><a href="/admin/log_view" title="View site logs.">View logs</a></li>
+              <li><a href="/admin/mail_list" title="View all dmails.">View Dmails</a></li>
+		      <li><a href="/admin/edit_user" title="Edit user options.">Edit User</a></li>
+		      <li><a href="/admin/ban_user" title="Ban a user.">Ban User</a></li>
+		      <li><a href="/admin/options" title="Edit Site configuration.">Site Config</a></li>
+		    </ul>
+		    <h5>User Group Tools:</h5><br />
+		    <ul id="tag-sidebar">
+		      <li><a href="/admin/add_group" title="Add a user group.">Create New Group</a></li>
+		      <li><a href="/admin/edit_group" title="Edit Group Permissions.">Edit Group Permissions</a></li>
+		    </ul>
+</check>
+             </div>
+         

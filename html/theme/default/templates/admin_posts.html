@@ -1,0 +1,39 @@
+<include href="admin_header.html" />
+    <div class="content">
+    <h4>{{ @message }}</h4>
+<check if="{{ count(@posts) == 0 }}">
+<true>
+    <h4>No reported posts.</h4>
+</true>
+<false>
+    <table class="highlightable" style="width: 100%; font-size: 12px;">
+        <tr>
+            <th>Post ID:</th>
+            <th>Reason:</th>
+            <th>Score:</th>
+            <th>Date Posted:</th>
+            <th>Unflag:</th>
+        </tr>
+    <repeat group="{{ @posts}}" value="{{ @p }}">
+        <tr>
+            <td style="width: 180px;"><center><a href="/post/view/{{ @p.id }}"><img src="{{ @site_url }}{{ @thumbnail_folder }}/{{ @p.hash }}.jpg"></a></center></td>
+            <td>{{ @p.reason }}</td>
+            <td>{{ @p.score }}</td>
+            <td>{{ @p.creation_date }}</td>
+            <td><a href="/admin/reported_posts/unreport/{{ @p.id }}">Unflag</a></td>
+        </tr>
+        <tr>
+            <td><br></td>
+        </tr>
+    </repeat>
+    </table>
+    <br /><br />
+    <div id="paginator">
+    {{ @pagebrowser | raw }}
+    </div>
+</false>
+</check>
+    <div class="cl"></div>
+ </div>
+</div>
+<include href="footer.html" />

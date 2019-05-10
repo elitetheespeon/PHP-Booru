@@ -1,0 +1,37 @@
+<include href="header.html" />
+		<div class="content_frame">
+            <div class="altcontent">
+            <form action="/post/3d" method="post">
+                Search: 
+                <input id="tags" name="tags" size="20" type="text" autocomplete="off" value="{{ @query }}"/>
+                <div id="autocomplete_dd" class="autocomplete"></div>
+                <script type="text/javascript">
+                new Ajax.Autocompleter('tags','autocomplete_dd','/post/search/autocomplete', {
+                tokens: ' '
+                })
+                </script>
+                <input name="commit" type="submit" value="Search" />
+                <br /><br />
+            </form>
+            <object id="ci_03412_o" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="400" height="400">
+              <param name="movie" value="{{ @site_url }}script/cooliris.swf"/>
+              <param name="allowFullScreen" value="true"/>
+              <param name="allowScriptAccess" value="never"/>
+              <param name="bgColor" value="#121212"/>
+              <param name="flashvars" value="feed={{ @site_url }}cooliris/{{ @query }}"/>
+              <param name="wmode" value="opaque"/>
+              <embed type="application/x-shockwave-flash"
+                src="{{ @site_url }}script/cooliris.swf"
+                width="100%"
+                height="600"
+                allowfullscreen="true"
+                allowscriptaccess="never"
+                bgcolor="#121212"
+                flashvars="feed={{ @site_url }}cooliris/{{ @query }}"
+                wmode="opaque">
+              </embed> 
+            </object>
+            </div>
+        </div>
+        </div>
+<include href="footer.html" />

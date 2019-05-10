@@ -1,0 +1,91 @@
+<include href="header.html" />
+<div class="content_frame">
+	<div class="sidebar">
+		<div id="tagl" class="block">
+			<h5>Recently Updated</h5>
+			<ul class="tag-sidebar">
+<repeat group="{{ @recent }}" value="{{ @r }}">
+    <check if="{{ @r.title !== null }}">
+				<li><span class="{{ @r.color }}"><a href="/wiki/view/{{ @r.id }}">{{ @r.title }}</a></span></li>
+    </check>                   
+</repeat>
+			</ul>
+		</div>
+	</div>
+			
+	<div class="content">
+		<div id="notice" class="notice"></div>
+		<div id="wiki" class="wiki">
+			<div id="wikicontent">
+				<h2 class="wiki-title">Editing: {{ @title }}</h2><br />
+<check if="{{ @user->gotpermission('change_wiki_title') }}">
+				Title: <input type="text" name="title" id="title" value="{{ @title }}" /><br /><br />
+</check>
+				<textarea name="editor" id="editor" rows="10">{{ @wikibody | raw }}</textarea><br />
+				<script>
+				CKEDITOR.replace('editor', {
+				    toolbarGroups: [
+				        {name: 'links'},
+				        {name: 'basicstyles', groups: [ 'basicstyles', 'cleanup']},
+				        {name: 'paragraph',   groups: [ 'list', 'indent', 'blocks' ]},
+				        {name: 'others'}
+				    ],
+				    extraPlugins: 'markdown'
+				});
+				function convert_markdown() {
+	                // Convert to Markdown and Fill the textarea.
+	                if (typeof(toMarkdown) == 'undefined') {
+	                    CKEDITOR.scriptLoader.load('/script/ckeditor/plugins/markdown/js/to-markdown.js', function() {
+					    	var markdown = toMarkdown(CKEDITOR.instances.editor.getData());
+					    	var title = jQuery('#title').val();
+					    	if(markdown !== ''){
+								jQuery.ajax({
+									type: "POST",
+									url: window.location,
+									data: {editor: markdown, title: title},
+									success: function(html) {
+				                        if (html.indexOf("ERROR") == -1) {
+				                            if (html == "OK") {
+					                        	window.location.replace("/wiki/view/{{ @PARAMS.id }}");
+				                            }
+				            			}else{
+				            				alert(html);
+				                        }
+									}
+								});
+					    		e.preventDefault();
+					    	}
+	                    });
+	                } else {
+				    	var markdown = toMarkdown(CKEDITOR.instances.editor.getData());
+				    	var title = jQuery('#title').val();
+				    	if(markdown !== ''){
+							jQuery.ajax({
+								type: "POST",
+								url: window.location,
+								data: {editor: markdown, title: title},
+								success: function(html) {
+			                        if (html.indexOf("ERROR") == -1) {
+			                            if (html == "OK") {
+				                        	window.location.replace("/wiki/view/{{ @PARAMS.id }}");
+			                            }
+			            			}else{
+			            				alert(html);
+			                        }
+								}
+							});
+							e.preventDefault();
+				    	}			    	
+	                }
+				}
+				</script>
+				<button class="savechanges" id="savechanges" >Save</button>&nbsp;
+				<button class="back_button" onclick="window.history.back()">Back</button>
+			</div>
+		</div>
+	</div>
+	<br />
+
+	<div class="cl"></div>
+</div>
+<include href="footer.html" />

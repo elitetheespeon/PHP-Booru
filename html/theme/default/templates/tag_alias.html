@@ -1,0 +1,40 @@
+<include href="header.html" />
+		<div class="content_frame">
+            <div class="altcontent">
+<check if="{{ @message }}">
+                <b>{{ @message }}</b><br /><br />
+</check>
+                You can suggest a new alias, but they must be approved by an administrator before they are activated.<br />
+                <div style="color: #ff0000;">An example of how to use this: (cat is the tag and kitty is the alias.)</div>
+                <br /><br />
+                <table class="highlightable" style="width: 100%;">
+                    <tr>
+                        <th width="25%">
+                            <b>Tag:<small> (What you search for...)</small></b>
+                        </th>
+                        <th width="25%">
+                            <b>Alias:</b><small> (What it should be...)</small>
+                        </th>
+                        <th>Reason:</th>
+                    </tr>
+<repeat group="{{ @alias }}" value="{{ @a }}">
+                    <tr class="{{ @a.statuscss }}">
+                        <td>{{ @a.alias }}</td>
+                        <td>{{ @a.tag }}</td>
+                        <td>{{ @a.reason }}</td>
+                    </tr>
+</repeat>
+                </table>
+                <br /><br />
+            	<form method="post" action=""><table><tr><td>
+            	<b>Name:</b></td><td><input type="text" name="alias" value=""/></td></tr>
+            	<tr><td><b>Alias to:</b></td><td><input type="text" name="tag" value=""/></td></tr>
+            	</table>
+            	<input type="submit" name="submit" value="Submit"/>
+            	</form>
+                <div id="paginator">
+                {{ @pagebrowser | raw }}
+                </div>
+            </div>
+        </div>
+<include href="footer.html" />

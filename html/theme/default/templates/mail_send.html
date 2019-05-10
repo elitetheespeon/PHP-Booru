@@ -1,0 +1,51 @@
+<include href="header.html" />
+<div class="content_frame">
+<div class="altcontent">
+<form method="post" action="/mail/send" id="reply">
+<div class="post" id="newpostreply">
+    <div class="post_author">
+        <h6><a href="/user/{{ @checked_user_id }}">{{ @checked_username }}</a></h6>
+        {{ @user_title }}
+<check if="{{ @avatarinfo }}">
+<true>
+        <a href="/user/{{ @checked_user_id }}"><img class="post_avatar" src="{{ @site_url }}{{ @thumbnail_folder_ava }}/{{ @checked_user_id }}_{{ @avatarinfo.md5 }}.{{ @avatarinfo.file_ext }}" height="{{ @avatarinfo.height }}" width="{{ @avatarinfo.width }}" /></a>
+</true>
+<false>
+        &nbsp;
+</false>
+</check>
+    </div>
+    <div class="post_content">
+        <div class="date"></div>
+<check if="{{ @to_userid }}">
+<true>
+        <h6>To: <input id="to_user" name="to_user" size="35" type="text" value="{{ @to_username }}" readonly /></h6>
+</true>
+<false>
+        <h6>To: <input id="to_user" name="to_user" size="35" type="text" autocomplete="off" /></h6>
+        <div id="autocomplete_dd" class="autocomplete"></div>
+        <script type="text/javascript">
+        new Ajax.Autocompleter('to_user','autocomplete_dd','/dmail/autocomplete', {
+        tokens: 'minChars: 1'
+        })
+        </script>
+</false>
+</check>
+        <h6>Title: <input type="text" name="title" value=""/></h6>
+        <div class="post_body">Body: <textarea id="reply_box" name="post" rows="4" cols="6" style="padding-left: 5px; padding-right: 5px; width: 450px; height: 200px;"></textarea></div>
+        <div class="post_signature"></div>
+		<div class="post_footer">
+    	<input type="submit" name="submit" value="Post"/>
+        <input type="hidden" name="conf" id="conf" value="0"/>
+        </div>
+    </div>
+    <script type="text/javascript">
+    //<![CDATA[
+    document.getElementById('conf').value=1;
+    //]]></script>
+</div>
+</form>
+<br />
+</div>
+</div>
+<include href="footer.html" />

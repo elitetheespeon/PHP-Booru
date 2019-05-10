@@ -1,0 +1,40 @@
+<include href="header.html" />
+    <div class="content_frame">
+    <div class="altcontent">
+<check if="{{ @info_error }}">
+    <br /><h4 style="error">{{ @info_error | raw }}</h4><br />
+</check>
+    <form method="post" action="">
+    <table><tr><td>
+    Username:<br />
+    <input type="text" name="user" value="" />
+    </td>
+        <td rowspan="4">What is pictured below?<br />
+        <img src="{{ @site_url }}theme/{{ @theme }}/capcha/{{ @captchas[@capval] }}" alt="captcha" height="100" /><br />
+        <input type="text" name="capval" value="" /></td>
+    </tr>
+    <tr><td>
+      Choose password:<br />
+      <input type="password" name="pass" value="" />
+    </td>
+      </tr>
+    <tr><td>
+      Confirm password:<br />
+      <input type="password" name="conf_pass" value="" />
+    </td>
+      </tr>
+    <tr><td>
+      Email (not required):<br />
+      <input type="text" name="email" value="" />
+    </td>
+      </tr>
+    <tr><td>
+    <input type="submit" name="submit" value="Register" />
+    <input type="hidden" name="cap" value="{{ @captchas[@capval] }}" />
+    </td>
+      <td>&nbsp;</td>
+    </tr>
+    </table>
+    </form></div>
+    <br /></div></div>
+<include href="footer.html" />

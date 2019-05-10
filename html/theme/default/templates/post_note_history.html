@@ -1,0 +1,18 @@
+<include href="header.html" />
+            <div class="content_frame">
+            <div class="altcontent">
+<check if="{{ @notecount <= 0 }}">
+<true>
+<h1>This post has no note history!</h1>
+</true>
+<false>
+            <table width="100%" class="highlightable" id="history">
+			<tr><th width="1%"></th><th width="4%">Post</th><th width="4%">Note</th><th width="56%">Body</th><th width="5%">Date</th><th width="10%">User</th><th width="10%">Options</th></tr>
+<repeat group="{{ @notedata }}" value="{{ @n }}">
+			<tr><td></td><td><a href="/post/view/{{ @PARAMS.id }}">{{ @PARAMS.id }}</a></td><td>{{ @n.note_id }}</td><td>{{ @n.body }}</td><td>{{ @n.updated_at }}</td><td>{{ @n.user }}</td><td><a href="#" onclick="if(confirm('Do you really want to revert to this point?')){document.location='/history/revert/{{ @n.id }}/{{ @PARAMS.id }}/{{ @n.version }}'; return false;}">Revert</a></td></tr>
+</repeat>
+            </table>
+</false>
+</check>
+            <br /></div></div>
+<include href="footer.html" />

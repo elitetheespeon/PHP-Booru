@@ -1,0 +1,568 @@
+<include href="header.html" />
+		<div class="content_frame">
+			<div class="sidebar">
+<!-- sidebar code goes here -->
+<!-- Ignore the rest of this -->
+				<!-- Search -->
+				<br />
+                <div id="sear" class="block">
+					<h5>Search</h5>
+                    <form action="/search" method="post"><form action="/search" method="post">
+                        <input id="tags" name="tags" size="20" type="text" autocomplete="off" />
+                        <div id="autocomplete_dd" class="autocomplete"></div>
+                        <script type="text/javascript">
+                        new Ajax.Autocompleter('tags','autocomplete_dd',' /post/search/autocomplete', {
+                        tokens: ' '
+                        })
+                        </script>
+                        <br />
+                        <input name="commit" type="submit" value="Search" />
+                        <br /><br />
+                    </form>
+                </div>
+				<!-- Tags -->
+				<div id="tagl" class="block">
+					<h5>Tags</h5>
+					<ul class="tag-sidebar">
+<repeat group="{{ @tags }}" value="{{ @t }}">
+    <check if="{{ @t.name !== null }}">
+                        <li><span class="post-count"><a href="/wiki/title/{{ urlencode(@t.name) }}">?</a></span> <span class="{{ @t.color }}"><a href="/post/list/{{ urlencode(@t.name) }}">{{ @t.name }}</a></span><span class="post-count"> {{ @t.count }}</span></li>
+    </check>                   
+</repeat>
+					</ul>
+				</div>
+				<!-- Functions -->				
+				<div id="func" class="block">      
+                    <br />
+                    <h5>Info</h5>
+                    <ul>
+                        <li>Title: {{ @postdata.0.title }}</li>
+                        <li>Id: {{ @PARAMS.id }}</li>
+                        <li>Uploaded: {{ @postdata.0.creation_date }} by 
+<check if="{{ @postdata.0.owner == '' }}">
+<true>
+                        Anonymous</li>
+</true>
+<false>
+                        <a href="/user/{{ @postdata.0.owner }}">{{ @user->get_username(@postdata.0.owner) }}</a></li>
+</false>
+</check>
+                        <li>Size: <a id="resize-button" href="{{ @site_url }}/images/{{ @postdata.0.hash }}.{{ @postdata.0.ext }}" onclick="return false;">{{ @postdata.0.width }}x{{ @postdata.0.height }}</a></li>
+                        <li>Source: {{ @source | raw }}</li>
+                        <li>Rating: {{ @rating }}</li>
+                        <li>Score: <a id="psc">{{ @postdata.0.score }}</a> <a href="#" onclick="Javascript:post_vote('{{ @PARAMS.id }}', 'up')">up</a>/<a href="#" onclick="Javascript:post_vote('{{ @PARAMS.id }}', 'down')">down</a></li>
+                        <li>Favorited by: <repeat group="{{ @favs }}" value="{{ @f }}"><a href='/user/{{ @f.id }}'>{{ @f.user }}</a>{{ @f.comma }} </repeat></li>
+                    </ul>
+                    <br />
+<check if="{{ @postdata.0.description !== '' }}">
+                    <h5>Description</h5>
+                    <ul>
+                        <li>{{ @postdata.0.description }}</li>
+                    </ul>
+                    <br />
+</check>
+                    <h5>Options</h5>
+                    <ul>
+<check if="{{ @user->gotpermission('edit_posts') }}">
+                        <li><a id="edit" href="javascript:void(null);">Edit Post</a></li>
+</check>
+<check if="{{ @user->gotpermission('delete_posts') }}">
+    <check if="{{ @postdata.0.status == 'deleted' }}">   
+    <true>
+                        <li><a id="restore" href="javascript:void(null);">Undelete post</a></li>
+                        <div id="restorepost" title="Undelete post">
+                            Are you sure you want to undelete this post?<br /><br /><br /><br />
+                            <form method="post" action="/post/softrestore" id="restore_form" name="restore_form">
+                              <input type="hidden" name="id" value="{{ @PARAMS.id }}" />
+                            </form>
+                        </div>
+    </true>
+    <false>
+                        <li><a id="delete" href="javascript:void(null);">Delete post</a></li>
+                        <div id="deletepost" title="Delete post">
+                            Please enter a reason for deletion.<br /><br />
+                            <form method="post" action="/post/softdelete" id="delete_form" name="delete_form">
+                              <label for="reason">Reason: </label>
+                              <textarea name="reason" id="reason" cols="50" rows="2"></textarea>
+                              <input type="hidden" name="id" value="{{ @PARAMS.id }}" />
+                            </form>
+                        </div>        
+    </false>
+    </check>
+</check>
+<check if="{{ @user->gotpermission('approve_posts') && @postdata.0.status == 'pending' }}">
+
+                        <li><a id="approve" href="javascript:void(null);">Approve post</a></li>
+                        <div id="approvepost" title="Approve post">
+                            Are you sure you want to approve this post?<br /><br />
+                            <form method="post" action="/post/approve" id="approve_form" name="approve_form">
+                              <input type="hidden" name="id" value="{{ @PARAMS.id }}" />
+                            </form>
+                        </div>
+</check>
+<check if="{{ @user->gotpermission('admin_panel') }}">
+                        <li><a id="permdelete" href="javascript:void(null);">Perm Delete post</a></li>
+                        <div id="permdeletepost" title="Permanently Delete post">
+                            Are you sure you want to permanently delete this post?<br /><br />
+                            <form method="post" action="/remove/post/{{ @PARAMS.id }}" id="permdelete_form" name="permdelete_form">
+                              <input type="hidden" name="id" value="{{ @PARAMS.id }}" />
+                            </form>
+                        </div>
+</check>
+                        <li><a href="#" onclick="Note.create({{ @PARAMS.id }}); return false;">Add note</a></li>
+<check if="{{ @favchk == false }}">
+<true>
+                        <li><a href="#" onclick="if(confirm('Add to favorites?')){ addFav('{{ @PARAMS.id }}'); }; return false;">Add to Favorites</a></li>
+</true>
+<false>
+                        <li>Favorited</li>
+</false>
+</check>
+<check if="{{ @user->gotpermission('edit_posts') }}">
+                        <li><a id="addtopool" href="javascript:void(null);">Add to Pool</a></li>
+                        <div id="addposttopool" title="Add to Pool">
+                            Add post to: <br /><br />
+                            <form method="post" action="/pool/addpost" id="addtopool_form" name="addtopool_form">
+                              <select name="poolid">
+    <repeat group="{{ @poollist }}" value="{{ @p }}">
+                                <option value="{{ @p.p_id }}">{{ @p.p_name }}</option>
+    </repeat>
+                              </select>
+                              <input type="hidden" name="postid" value="{{ @PARAMS.id }}" />
+                            </form>
+                        </div>
+</check>
+<check if="{{ @flagres == '' }}">
+<true>   
+                        <li><a id="rp{{ @PARAMS.id }}"></a><a href="#" id="rpl{{ @PARAMS.id }}" onclick="jQuery('#report_form').toggle(); return false;">Report post</a></li><br /><form id="report_form" method="post" action="/report/post/{{ @PARAMS.id }}" style="display: none;">Reason for report:<br /><input type="text" name="reason" value=""/><input type="submit" name="" value="Go" /></form>
+</true>    
+<false>
+                        <li><b>Post reported</b></li>
+</false>
+</check>
+<check if="{{ @user->gotpermission('admin_panel') }}">
+                        <li>Status<form name="statusfrm" method="post" action="/post/changestatus/{{ @PARAMS.id }}"><select name="status" id="status"><option value="1" {{ @status1 }}>Normal</option><option value="2" {{ @status2 }}>Deleted</option><option value="3" {{ @status3 }}>Pending</option></select><input type="submit" name="statusbtn" id="statusbtn" value="Change" /></form><br /></li>
+</check>
+<check if="{{ @user->gotpermission('admin_panel') }}">
+                        <li>DNP<form name="dnpfrm" method="post" action="/post/changednp/{{ @PARAMS.id }}"><select name="dnp" id="dnp"><option value="1" {{ @dnp1 }}>Yes</option><option value="0" {{ @dnp2 }}>No</option></select><input type="submit" name="dnpbtn" id="dnpbtn" value="Change" /></form></li>
+</check>  
+                    </ul>
+                    <br />
+                    <h5>History</h5>
+                    <ul>
+                        <li><a href="#" onclick="document.location='/history/page_notes/{{ @PARAMS.id }}'; return false;">Notes</a></li>
+                        <li><a href="/history/tag_history/{{ @PARAMS.id }}">Tags</a></li>
+                    </ul>
+                    <br />
+                    <h5>Related Posts</h5>
+    				<ul>
+<check if="{{ @prev_next['prev'] !== null }}">
+                        <li><a href="/post/view/{{ @prev_next['prev'] }}">Previous</a></li>
+</check>
+<check if="{{ @prev_next['next'] !== null }}">
+                        <li><a href="/post/view/{{ @prev_next['next'] }}">Next</a></li>
+</check>
+<check if="{{ @postdata.0.parent != 0 }}">
+                        <li><a href="/post/view/{{ @postdata.0.parent }}">Parent</a></li>
+</check>
+    				</ul>
+				</div>
+			</div>
+			
+			<div class="content">
+            <br />
+<check if="{{ @imagestatus !== '' }}">
+                <div class="status-notice">
+                {{ @imagestatus }}
+                </div>                
+</check>
+                <div id="notice" class="notice"></div>
+<check if="{{ @post->has_children(@PARAMS.id) }}">
+			<div class="status-notice">
+				This post has 
+				<a href="/post/list/parent:{{ @PARAMS.id }}">child posts</a>. Child posts are often minor variations of the parent post. 
+				(<a href="/help/">learn more</a>).
+			</div>
+			<br/>
+</check>
+<check if="{{ count(@poolinfo) > 0 }}">
+    <repeat group="{{ @poolinfo }}" value="{{ @pi }}">
+		<div class="pool-notice">		
+				<tbody><tr>
+				  <td>
+					<!--<a href="/pool/view/{{ @pi.p_id }} onclick="Post.fullview('/post/view/{{ @PARAMS.id }}', '{{ @postdata.0.hash }}', 753, 1010); return false; return false;" title="Open in popup">❒</a>-->
+					Pool:
+        <check if="{{ @pi.p_prev == '' }}">
+        <true>
+					  <span class="disabled">&lt;&lt;</span>
+        </true>
+        <false>
+                      <a href="/post/view/{{ @pi.p_prev }}">&lt;&lt;</a>
+        </false>
+        </check>
+					<a href="/pool/view/{{ @pi.p_id }}">{{ @pi.p_name }}</a>
+        <check if="{{ @pi.p_next == '' }}">
+        <true>
+					  <span class="disabled">&gt;&gt;</span>
+        </true>
+        <false>
+                      <a href="/post/view/{{ @pi.p_next }}">&gt;&gt;</a>
+        </false>
+        </check>
+				  </td>
+				  <td align="right">
+					<!--<a href="#" onclick="if (confirm('Remove this post from pool &quot;{{ @pi.p_name }}&quot;?')) Pool.remove_post({{ @PARAMS.id }}, {{ @pi.p_id }}); return false;">X</a>-->
+				  </td>
+				</tr>
+			  </tbody>
+			</div>
+    </repeat>
+</check>
+			<p id="note-count">This post has <a href="#">0 annotations</a>. Click the image to show/hide.</p>
+            <div id="note-container" class="note-container">
+            <div class="template" id="note-template">
+                <div class="note-box">
+                    <div class="note-corner"></div>
+                    <div class="note-tilt"></div>
+                </div>
+                <div class="note-body" title="Click to edit"></div>
+            </div>
+<!-- replace with content code -->
+<repeat group="{{ @note_data }}" value="{{ @nd }}">
+            <div class="note-box" style="width: {{ @nd.width }}px; height: {{ @nd.height }}px; top: {{ @nd.y }}px; left: {{ @nd.x }}px; display: block; transform: rotate({{ @nd.angle }}deg);" id="note-box-{{ @nd.id }}">
+			<div class="note-corner" id="note-corner-{{ @nd.id }}"></div>
+            <div class="note-tilt" id="note-tilt-{{ @nd.id }}"></div></div>
+			<div style="top: {{ (@nd.width+@nd.y+5) }}px; left: {{ @nd.x }}px;" class="note-body" id="note-body-{{ @nd.id }}" title="Click to edit">{{ @nd.body | raw }}</div>
+</repeat>
+            <div id="edit-box" class="note-edit">
+                <form id="edit-form" onsubmit="return false;">
+                    <textarea rows="6" id="edit-box-text"></textarea>
+                    <input type="submit" value="Save" id="note-save">
+                    <input type="submit" value="Cancel" id="note-cancel">
+                    <input type="submit" value="Remove" id="note-remove">
+                    <input type="submit" value="History" id="note-history">
+                </form>
+            </div>
+
+            </div>
+<check if="{{ @postdata.0.ext == 'webm' || @postdata.0.ext == 'mp4' }}">
+<true>
+                <video width="{{ @postdata.0.width }}" height="{{ @postdata.0.height }}" controls>
+                  <source src="{{ @site_url }}/images/{{ @postdata.0.hash }}.{{ @postdata.0.ext }}" type="video/{{ @postdata.0.ext }}">
+                  Your browser does not support HTML5 video.
+                </video>
+</true>
+<false>
+<check if="{{ @postdata.0.ext == 'swf' }}">
+<true>
+				<object width="{{ @postdata.0.width }}" height="{{ @postdata.0.height }}">
+				<param name="movie" value="{{ @site_url }}/images/{{ @postdata.0.hash }}.swf">
+				<embed src="{{ @site_url }}/images/{{ @postdata.0.hash }}.swf" width="{{ @postdata.0.width }}" height="{{ @postdata.0.height }}" allowScriptAccess="never"></embed>
+				</object></p>
+</true>
+<false>
+<check if="{{ file_exists('images/'.@postdata.0.hash.'.'.@postdata.0.ext) }}">
+<true>
+                <img alt="img" src="{{ @site_url }}/images/{{ @postdata.0.hash }}.{{ @postdata.0.ext }}" id="image" onclick="Note.toggle();" style="max-width: {{ @postdata.0.width }}px;" height="{{ @postdata.0.height }}" width="{{ @postdata.0.width }}"/><br /><br />
+                <script type="text/javascript">
+                //<![CDATA[
+                
+                
+                addEventListener("DOMContentLoaded", function () {
+                    var notes = Note.all;
+                    var image = document.getElementById("image");
+                    var noteBoxes = document.getElementsByClassName("note-box");
+                    
+                    var iw = image.width;
+                    
+                    image.style.width = "100%";
+                    image.style.height = "auto";
+                    Note.scaled = true;
+                    
+                    var scale = image.clientWidth / iw;
+                    if(image.clientWidth < iw){
+                        for (var i = 0; i < notes.length; i++){
+                            var box = notes[i].elements.box;
+                            box.style.top = box.offsetTop*scale + "px";
+                            box.style.left = box.offsetLeft*scale + "px";
+                            box.style.height = box.clientHeight*scale + "px";
+                            box.style.width = box.clientWidth*scale + "px";
+                        }
+                    }
+                    
+                    addEventListener("resize",function () {
+                        var notes = Note.all;
+                        var scale = image.clientWidth / image.naturalWidth;
+                        for (var i = 0; i < notes.length; i++){
+                            var box = notes[i].elements.box;
+                            var old = notes[i].old
+                            box.style.top = old.top*scale + "px";
+                            box.style.left = old.left*scale + "px";
+                            box.style.height = old.height*scale + "px";
+                            box.style.width = old.width*scale + "px";
+                            box.style.transform = "rotate(" + old.angle + "deg)"
+                            notes[i].angle = old.angle
+                        }
+                    })
+                    
+                    
+                    var resizeButton = document.getElementById("resize-button");
+                    
+                    resizeButton.onclick = function() {
+                        var notes = Note.all;
+                        image.style.width = image.style.width == "auto" && "100%" || "auto";
+                        Note.scaled = !Note.Scaled;
+                        var scale = image.clientWidth / image.naturalWidth;
+                        for (var i = 0; i < notes.length; i++){
+                            var box = notes[i].elements.box;
+                            var old = notes[i].old
+                            box.style.top = old.top*scale + "px";
+                            box.style.left = old.left*scale + "px";
+                            box.style.height = old.height*scale + "px";
+                            box.style.width = old.width*scale + "px";
+                            box.style.transform = "rotate(" + old.angle + "deg)"
+                            notes[i].angle = old.angle
+                        }
+                        return false;
+                    }
+                });
+                //]]>
+                </script>
+</true>
+<false>
+				<h4>Image cannot be displayed.</h4><br /><br />
+</false>
+</check>				
+</false>
+</check>
+</false>
+</check>
+            <script type="text/javascript">
+                		//<![CDATA[
+                		Note.post_id = {{ @PARAMS.id }};
+<repeat group="{{ @note_data }}" value="{{ @nd }}">
+                        Note.all.push(new Note({{ @nd.id }}, false));
+</repeat>
+                Note.updateNoteCount();
+                		Note.show();
+                		//]]>
+            </script>
+                <div id="editform" title="Edit post">
+                <form method="post" action="/post/edit" id="edit_form" name="edit_form">
+                  <table width="700" border="1">
+                  <tr>
+                    <td width="200"><label for="rating">Rating</label></td>
+                    <td width="500">
+                    	<input type="radio" name="rating" <check if="{{ @postdata.0.rating == 'e' }}">{{ print('checked="checked"') }}</check> value="e" />Explicit
+                    	<input type="radio" name="rating" <check if="{{ @postdata.0.rating == 'q' }}">{{ print('checked="checked"') }}</check> value="q" />Questionable
+                    	<input type="radio" name="rating" <check if="{{ @postdata.0.rating == 's' }}">{{ print('checked="checked"') }}</check> value="s" />Safe
+                  	</td>
+                  </tr>
+                  <tr>
+                    <td><label for="title">Title: </label></td>
+                    <td><input type="text" name="title" id="title" value="{{ @postdata.0.title }}" /></td>
+                  </tr>
+                  <tr>
+                    <td><label for="description">Description: </label></td>
+                    <td><textarea name="description" id="description" cols="50" rows="3">{{ @postdata.0.description }}</textarea></td>
+                  </tr>
+                  <tr>
+                    <td><label for="parent">Parent: </label></td>
+<check if="{{ @postdata.0.parent == '0' }}">
+<true>
+                    <td><input type="text" name="parent" value="" /></td>
+</true>
+<false>
+                    <td><input type="text" name="parent" value="{{ @postdata.0.parent }}" /></td>
+</false>
+</check>
+                  </tr>
+                  <tr>
+                    <td><label for="next_post">Next Post: </label></td>
+                    <td><input type="text" name="next_post" id="next_post" value="{{ @prevnext['1'] }}"/></td>
+                  </tr>
+                  <tr>
+                    <td><label for="previous_post">Previous Post: </label></td>
+                    <td><input type="text" name="previous_post" id="previous_post" value="{{ @prevnext['0'] }}"/></td>
+                  </tr>
+                  <tr>
+                    <td><label for="source">Source: </label></td>
+                    <td><input type="text" name="source" size="40" id="source" value="{{ @postdata.0.source | raw }}" /></td>
+                  </tr>
+                  <tr>
+                    <td><label for="tags">Tags: </label></td>
+                    <td>
+                		<ul id="tagedit" style="width: 400px;">
+<repeat group="{{ @tags }}" value="{{ @t }}">
+                        	<li>{{ @t.name }}</li>
+</repeat>
+                        </ul>
+                    </td>
+                  </tr>
+                </table>
+                <input type="hidden" name="pconf" id="pconf" value="0"/>
+                <input type="hidden" name="id" value="{{ @PARAMS.id }}" />              		
+                </form>
+                </div>    
+                    
+                    <script type="text/javascript">
+            		//<![CDATA[
+            			$('pconf').value=1;			
+            		//]]>
+            		</script>
+            		<script type="text/javascript">
+            		//<![CDATA[
+            		var my_tags = readCookie("tags").split(/[, ]|%20+/g);
+            		var my_tags_length = my_tags.length;
+            		var temp_my_tags = Array();
+            		var g = 0;
+            		for(i in my_tags)
+            		{
+            			if(my_tags[i] != "" && my_tags[i] != " " && i <= my_tags_length)
+            			{
+            				temp_my_tags[g] = my_tags[i];				
+            				g++;
+            			}
+            		}
+            		my_tags = temp_my_tags;
+            		var links = '';
+            		j = 0;
+            		my_tags_length = my_tags.length;
+            		for(i in my_tags)
+            		{
+            			if(j < my_tags_length)
+            			{
+            				links = links+'<a href="/post/list/'+my_tags[i]+'" id="t_'+my_tags[i]+'"' + "onclick=\"javascript:toggleTags('"+my_tags[i]+"','tags','t_"+my_tags[i]+"');" + 'return false;">'+my_tags[i]+'</a> ';
+            			}
+            			j++;
+            		}
+            		if(j > 0)
+            			$('my-tags').innerHTML=links;
+            		else
+            			$('my-tags').innerHTML='<a href="/user/options">Edit</a>';
+            		//]]>
+            		</script>
+            		<script type="text/javascript">
+            		//<![CDATA[
+            		function toggleTags(tag, id, lid)
+            		{
+            			temp = new Array(1);
+            			temp[0] = tag;
+            			tags = $('tags').value.split(" ");
+            			if(tags.include(tag))
+            			{
+            				$('tags').value=tags.without(tag).join(" ");
+            				$(lid).innerHTML=tag+" ";
+            			}
+            			else
+            			{
+            				$('tags').value=tags.concat(temp).join(" ");
+            				$(lid).innerHTML="<b>"+tag+"</b> ";
+            			}
+            			return false;
+            		}
+            		//]]>
+            		</script>
+            		
+            		<script type="text/javascript">
+            		//<![CDATA[
+            		var posts = {}; posts[{{ @PARAMS.id }}] = {}; posts[{{ @PARAMS.id }}].comments = {}; posts[{{ @PARAMS.id }}].ignored = {}; var cthreshold = parseInt(readCookie('comment_threshold')) || 0; var users = readCookie('user_blacklist').split(/[, ]|%20+/g);
+            		//]]>
+            		</script>
+        <br /><br />
+        <h4>
+        <a href="javascript:void(null);" id="showhide_comments" class="">&raquo;Show/hide {{ @commentcount }} comments</a>
+        </h4>
+        <div id="comments" style="display: none;">
+<repeat group="{{ @comments }}" value="{{ @c }}">
+                    <div class="post" id="{{ @c.id }}">
+                        <div class="post_author">
+                            <h6><a href="/user/{{ @c.user }}">{{ @user->get_username(@c.user) }}</a></h6>
+		                    {{ @c.usertitle }}
+		                    <div>
+<check if="{{ @avatarinfo = @user->get_avatar(@c.user) }}">
+<true>
+                            <a href="/user/{{ @c.user }}"><img class="post_avatar" src="{{ @site_url }}{{ @thumbnail_folder_ava }}/{{ @c.user }}_{{ @avatarinfo.md5 }}.{{ @avatarinfo.file_ext }}" height="{{ @avatarinfo.height }}" width="{{ @avatarinfo.width }}" /></a>
+</true>
+<false>
+                            &nbsp;
+</false>
+</check>
+                            </div>
+    </div>
+        <div class="post_content">
+            
+            <div class="post_info"><b>Score: <a id="sc{{ @c.id }}">{{ @c.score }}</a> (vote <a href="#" onclick="Javascript:vote('{{ @PARAMS.id }}', '{{ @c.id }}', 'up'); return false;">Up</a>/<a href="#" onclick="Javascript:vote('{{ @PARAMS.id }}', '{{ @c.id }}', 'down'); return false;">Down</a>)&nbsp;&nbsp;&nbsp;
+<check if="{{ @c.spam == false }}">
+<true>
+                                (<a id="rc{{ @c.id }}"></a><a href="#" id="rcl{{ @c.id }}" onclick="Javascript:spam('comment','{{ @c.id }}')">Report as spam</a>)
+</true>
+<false>
+                                (<b>Reported</b>)
+</false>
+</check>
+<check if="{{ @user->gotpermission('delete_comments') || @c.user == @checked_user_id }}">
+                                &nbsp;&nbsp;&nbsp;(<a href="#" onclick="document.location='/remove/comment/{{ @c.id }}/{{ @PARAMS.id }}'; return false;">Remove</a>)    
+</check>
+                                </b>
+                             </div>   
+                            <div class="date">{{ @misc->date_words(strtotime(@c.posted_at)) }}</div><br />
+                            <div class="post_body">{{ @misc->swap_bbs_tags(@misc->short_url(@misc->linebreaks(@c.comment))) | raw }}</div>  
+                            <div class="post_signature">
+                                <hr></hr>
+								{{ @c.usersignature | raw }}
+                            </div>
+                        </div>
+                    </div>
+			<script type="text/javascript">
+    			//<![CDATA[
+    			posts[{{ @PARAMS.id }}].comments[{{ @c.id }}] = {'score':{{ @c.score }}, 'user':'{{ str_replace('\\',"&#92;",str_replace(' ','%20',str_replace("'","&#039;",@c.user))) }}'}
+    			//]]>
+			</script>
+</repeat>
+                <form method="post" action="/comment/add/{{ @PARAMS.id }}" name="comment_form" id="comment_form" style="">
+                
+                <div class="post" id="newcommentreply">
+                    <div class="post_author">
+                        <h6><a href="/user/{{ @checked_user_id }}">{{ @user->get_username(@checked_user_id) }}</a></h6>
+<check if="{{ @avatarinfo = @user->get_avatar(@checked_user_id) }}">
+<true>
+                        <a href="/user/{{ @checked_user_id }}"><img class="post_avatar" src="{{ @site_url }}{{ @thumbnail_folder_ava }}/{{ @checked_user_id }}_{{ @avatarinfo.md5 }}.{{ @avatarinfo.file_ext }}" height="{{ @avatarinfo.height }}" width="{{ @avatarinfo.width }}" /></a>
+</true>
+<false>
+                        &nbsp;
+</false>
+</check>
+                    </div>
+                    <div class="post_content">
+                        <div class="date"></div>
+                        <div class="post_body">Comment: <textarea name="comment" rows="0" cols="0"></textarea></div>
+                		<div class="post_footer">
+                        <input type="submit" name="submit" value="Post comment"/>
+                        <input type="hidden" name="conf" id="conf" value="0"/>
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+                		//<![CDATA[
+                		document.getElementById('conf').value=1;			
+                		//]]>
+                    </script>
+                </div>
+                </form>
+            <br /><br />
+            <script type="text/javascript">
+        		//<![CDATA[
+        		filterComments('{{ @PARAMS.id }}', '{{ @commentcount }}')
+        		//]]>
+            </script>
+            <div id="paginator">
+            {{ @pagebrowser | raw }}
+            </div>
+                <!--<a href="#" onclick="Javascript:showHide('comment_form'); return false;">&raquo;Respond</a> -->
+            </div>
+        </div>
+            <br /><br /><br /><br />
+
+			<div class="cl"></div>
+		</div>
+<include href="footer.html" />

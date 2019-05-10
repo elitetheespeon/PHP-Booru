@@ -1,0 +1,47 @@
+<include href="header.html" />
+<div class="content_frame">
+	<div class="sidebar">
+		<div id="tagl" class="block">
+			<h5>Recently Updated</h5>
+			<ul class="tag-sidebar">
+<repeat group="{{ @recent }}" value="{{ @r }}">
+    <check if="{{ @r.title !== null }}">
+				<li><span class="{{ @r.color }}"><a href="/wiki/view/{{ @r.id }}">{{ @r.title }}</a></span></li>
+    </check>                   
+</repeat>
+			</ul>
+		</div>
+	</div>
+			
+	<div class="content">
+		<div id="notice" class="notice"></div>
+		<div id="wiki" class="wiki">
+		<h2 class="wiki-title">History for {{ @title }}</h2>
+		<form action="/wiki/revert/{{ @PARAMS.id }}" method="post">
+			<table class="highlightable" width="100%">  
+			<tr>
+	          <th width="5%">Version</th>
+	          <th width="5%"></th>
+	          <th width="90%">Last edited</th>
+			</tr>
+<repeat group="{{ @wikihist }}" value="{{ @w }}" key="{{ @key }}">
+<check if="@key != (@count-1)">
+			<tr>
+				<td><input id="version_{{ @w.version }}" name="version" type="radio" value="{{ @w.version }}">&nbsp;{{ @w.version }}</td>
+				<td><input id="" name="" type="button" value="Show" onclick="window.location.href='/wiki/view/{{ @PARAMS.id }}/{{ @w.version }}';"></td>
+				<td>{{ @w.updated_at }} by {{ @user->get_username(@w.user_id) }}</td>
+			</tr>
+</check>
+</repeat>
+		    <tr>
+				<td colspan="2"><input name="commit" type="submit" value="Revert"></td>
+		    </tr>
+	        </table>
+        </form>
+		</div>
+	</div>
+	<br />
+
+	<div class="cl"></div>
+</div>
+<include href="footer.html" />

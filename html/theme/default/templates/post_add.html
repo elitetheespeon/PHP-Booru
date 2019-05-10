@@ -1,0 +1,56 @@
+<check if="{{ @info == '[]' }}">
+<true>
+<include href="header.html" />
+		<div class="content_frame">
+            <div class="altcontent">	
+                <h4 style="margin-bottom:7px;">Please consult the uploading guide before posting.</h4>
+                <p><i>Note: If multiple files are uploaded, all of the information below such as tags will apply to all posts.</i></p>
+                <div id="upload_status"></div>
+                <div style="width:800px;margin-top:15px;">
+                <form class="dropzone" id="uploadposts" action="{{ @site_url }}post/add" method="post" enctype="multipart/form-data">
+                	<table>
+                	<tr>
+                	  <td width="10%"><div align="right"><label for="upload">Files:<br /></label></div></td>
+                	  <td width="90%">
+                	  <div class="fallback"><input name="upload" type="file" size="50" multiple /></div>
+                	  <div id="dropzoneprev" class="dz-default dz-message"><div align="left"><span>Drop files here to upload</span></div></div>
+                      </td>
+                    </tr>
+                	<tr>
+                	  <td><div align="right"><label for="source">Source:<br /></label></div></td>
+                	  <td><input name="source" type="text" value="" size="50" /><br /><div class="formdesc">URL to page where images were found.</div></td>
+                	</tr>
+                	<tr>
+                	  <td><div align="right"><label for="title">Title:<br /></label></div></td>
+                	  <td><input name="title" type="text" value="" size="50" /><br /><div class="formdesc">Title for all posts.</td>
+                	</tr>
+                	<tr>
+                	  <td><div align="right"><label for="description">Description:<br /></label></div></td>
+                	  <td><textarea id="description" name="description" cols="60" rows="5"></textarea><div class="formdesc">Any extra information/background for posts.</div></td>
+                	</tr>
+                	<tr>
+                	  <td><div align="right"><label for="tags">Tags:<br /></label></div></td>
+                	  <td><ul id="tagedit" style="width: 400px;margin-bottom: 0;"></ul><div class="formdesc">Tag example: green_eyes art:some_artist spec:some_species</div></td>
+                	</tr>
+                	<tr>
+                	  <td><div align="right"><label for="rating">Rating:<br /></label></div></td>
+                	  <td><input type="radio" name="rating" value="e" />Explicit
+                	  <input type="radio" name="rating" value="q" checked="true" />Questionable
+                	  <input type="radio" name="rating" value="s" />Safe
+                	  <br /><div class="formdesc">Explicit tags include sex, pussy, penis, masturbation, blowjob, etc.</div></td>
+                	</tr>
+                	<tr>
+                	<td><button type="submit" name="submit">Upload</button></td>
+                	</tr>
+                	<input name="usrmaxup" id="usrmaxup" type="hidden" value="{{ @usrmaxup }}" />
+                	</form>
+                	</table>
+                </div>
+            </div>
+        </div>
+<include href="footer.html" />
+</true>
+<false>
+{{ @info | raw }}
+</false>
+</check>

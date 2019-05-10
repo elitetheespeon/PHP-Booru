@@ -1,0 +1,33 @@
+<include href="header.html" />
+	<div class="content_frame">
+    <div class="altcontent">
+    <script type="text/javascript">
+    var poolid = {{ @poolinfo.0.id }};
+    var page = {{ @page }};
+    var limit = {{ @limit }};
+    </script>
+    <h4>{{ @poolinfo.0.name }}</h4><br />
+    <span>{{ @poolinfo.0.description }}</span><br />
+    <select name='mode'><option value=''><-Select Mode -></option><option value='reorder'>Reorder</option><option value='delete'>Delete</option><option value='manualreorder'>Manual Re-order</option></select> <button class='savechanges' id='savechanges' type='button'>Save Changes</button>
+    <div class="gallery">
+<check if="{{ count(@posts) == 0 }}">
+<true>
+            <h1>{{ @t_notfound }}</h1>
+            <br /><br />
+		    </div></div>
+</true>
+<false>
+        <ul class="reorder_ul reorder-photos-list">
+    <repeat group="{{ @posts }}" value="{{ @p }}">
+            <li class="thumb" id="image_li_{{ @p.id }}" class="ui-sortable-handle"><a id="p{{ @p.id }}" href="/post/view/{{ @p.id }}" style="float:none;" class="image_link"><img class="{{ @p.imageclass }}" src="{{ @p.imagestr }}" alt="post" border="0" title="{{ @p.tags }} score:{{ @p.score }} rating:{{ @p.rating }}"/></a></li>
+    </repeat>
+        </ul>
+		</div><br /><br /><div id='paginator'>
+        {{ @pagebrowser | raw }}
+        </div>
+        </div>
+</false>
+</check>
+		<div class="cl"></div>
+		</div>
+<include href="footer.html" />

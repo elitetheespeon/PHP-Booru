@@ -1,0 +1,48 @@
+<include href="header.html" />
+<div class="content_frame">
+	<div class="sidebar">
+		<div id="tagl" class="block">
+			<h5>Recently Updated</h5>
+			<ul class="tag-sidebar">
+<repeat group="{{ @recent }}" value="{{ @r }}">
+    <check if="{{ @r.title !== null }}">
+				<li><span class="{{ @r.color }}"><a href="/wiki/view/{{ @r.id }}">{{ @r.title }}</a></span></li>
+    </check>                   
+</repeat>
+			</ul>
+		</div>
+	</div>
+			
+	<div class="content">
+		<div id="notice" class="notice"></div>
+		<div id="wiki" class="wiki">
+<check if="{{ count(@wikiinfo) == 0 }}">
+<true>
+        <h1>{{ @t_notfound }}</h1>
+</true>
+<false>
+		<table class="highlightable" width="100%">  
+		<tr>
+		<th width="42%">Title</th>
+		<th width="22%">Last edited</th>
+		</tr>
+    <repeat group="{{ @wikiinfo }}" value="{{ @w }}">
+		<tr>
+		<td><a href= "/wiki/view/{{ @w.id }}">{{ @w.title }}</a></td>
+			<td>{{ @w.updated_at }} by {{ @userc->get_username(@w.user_id) }}</td>
+		</tr>
+    </repeat>
+</false>
+</check>
+        </table>
+		</div>
+		<br /><br />
+		<div id='paginator'>
+        {{ @pagebrowser | raw }}
+        </div>
+	</div>
+	<br />
+
+	<div class="cl"></div>
+</div>
+<include href="footer.html" />

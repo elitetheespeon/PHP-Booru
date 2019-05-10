@@ -1,0 +1,238 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="RATING" content="{{ @SiteRating }}"/>
+    <meta name="keywords" content="{{ @SiteKeywords }}"/>
+    <meta name="description" content="{{ @SiteDescription }}"/>
+	<title>{{ @site_url3 }}</title>
+	<link rel="stylesheet" type="text/css" href="{{ @site_url }}theme/{{ @theme }}/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="{{ @site_url }}theme/{{ @theme }}/css/style.css">
+	<link rel="search" type="application/opensearchdescription+xml" title="{{ @site_url3 }}" href="/search.xml" />
+    <link href="{{ @site_url }}atom" rel="alternate" title="ATOM" type="application/atom+xml"/>
+    <link rel="shortcut icon" href="{{ @site_url }}theme/{{ @theme }}/favicon.ico" /> 
+<check if="{{ @pagename=='wiki_compare' }}">
+    <link rel="stylesheet" type="text/css" href="{{ @site_url }}theme/{{ @theme }}/css/diff.css">
+</check>
+<check if="{{ @pagename=='post_view' || @pagename=='post_add' }}">
+    <link rel="stylesheet" type="text/css" href="{{ @site_url }}theme/{{ @theme }}/css/jquery.tagit.css">
+    <link rel="stylesheet" type="text/css" href="{{ @site_url }}theme/{{ @theme }}/css/tagit.ui-zendesk.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.1/jquery-ui.css">
+</check>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<check if="{{ strpos(@pagename, 'post_') !== false || strpos(@pagename, 'forum_') !== false || strpos(@pagename, 'mail_') !== false }}">
+    <script src="{{ @site_url }}script/prototype.js?2" type="text/javascript"></script>
+    <script src="{{ @site_url }}script/global.js?2" type="text/javascript"></script>
+    <script src="{{ @site_url }}script/scriptaculous.js?2" type="text/javascript"></script>
+    <script src="{{ @site_url }}script/builder.js?2" type="text/javascript"></script>
+    <script src="{{ @site_url }}script/effects.js?2" type="text/javascript"></script>
+    <script src="{{ @site_url }}script/dragdrop.js?2" type="text/javascript"></script>
+    <script src="{{ @site_url }}script/controls.js?2" type="text/javascript"></script>
+    <script src="{{ @site_url }}script/slider.js?2" type="text/javascript"></script>
+    <script src="{{ @site_url }}script/notes.js?2" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{ @site_url }}script/tag-it.js?2" type="text/javascript" charset="utf-8"></script>
+    <script src="{{ @site_url }}script/postview.js?2" type="text/javascript"></script>
+    <script src="{{ @site_url }}script/dropzone.js?2"></script>
+    <script src="{{ @site_url }}script/dropzoneopts.js?2"></script>
+</check>
+<check if="{{ @pagename=='wiki_add' || @pagename=='wiki_edit' }}">
+	<script src="{{ @site_url }}script/ckeditor/ckeditor.js"></script>
+	<script src="{{ @site_url }}script/ckeditoropts.js?2"></script>
+</check>
+<check if="{{ @pagename=='pool_view' || @pagename=='pool_editor' }}">
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{ @site_url }}script/dragdropgal.js?2" type="text/javascript"></script>
+</check>
+	<!-- JS -->
+	<!--[if lt IE 7]>
+		<script defer type="text/javascript" src="{{ @site_url }}script/pngfix.js?2"></script>
+	<![endif]-->
+</head>
+<body>
+<div class="wrapper">
+
+	<div class="body_frame">
+	<div class="body_too">
+		<div class="header_frame">
+			<div class="nav_bar">
+				<div class="nav_item <check if="{{ strpos(@pagename, 'post_') !== false || strpos(@pagename, 'comment_') !== false || strpos(@pagename, 'pool_') !== false}}"> active</check>">
+					<a href="{{ @site_url }}post/all/" title="Posts">Posts</a>
+				</div>
+				<div class="nav_item <check if="{{ strpos(@pagename, 'tag_') !== false }}"> active</check>">
+					<a href="{{ @site_url }}tag/list" title="Tags">Tags</a>
+				</div>
+
+				<div class="nav_item <check if="{{ strpos(@pagename, 'stats_') !== false }}"> active</check>">
+					<a href="{{ @site_url }}stats" title="Stats">Stats</a>
+				</div>
+				
+				<div class="nav_item">
+					<a href="/chat" target="_blank" title="Chat">Chat</a>
+				</div>
+				
+				<div class="nav_item <check if="{{ strpos(@pagename, 'forum_') !== false }}"> active</check>">
+					<a href="{{ @site_url }}forum/list" title="Forum">Forum</a>
+				</div>         
+
+				<div class="nav_item <check if="{{ strpos(@pagename, 'wiki_') !== false }}"> active</check>">
+					<a href="{{ @site_url }}wiki/list" title="Wiki">Wiki</a>
+				</div>
+				
+				<div class="nav_item <check if="{{ strpos(@pagename, 'help_') !== false }}"> active</check>">
+					<a href="{{ @site_url }}help" title="Help">Help</a>
+				</div>
+				
+                <div class="nav_item <check if="{{ strpos(@pagename, 'user_') !== false }}"> active</check>">
+<check if="{{ @checked_user_group == 0 }}">
+<true>
+                    <a href="{{ @site_url }}user/home" title="Login">Login</a>
+</true>
+<false>
+                    <a href="{{ @site_url }}user/home" title="My Account">My Account</a>
+</false>
+</check>
+				</div>
+                <div class="nav_item <check if="{{ strpos(@pagename, 'mail_') !== false }}"> active</check>">
+<check if="{{ @checked_user_group !== null }}">
+	<check if="{{ @dmailc->has_new_mail(@checked_user_id) }}">
+	<true>
+                    <div><a href="{{ @site_url }}mail/" title="Mail"><span class="mailunread">Mail</span></a></div>
+	</true>
+	<false>
+				    <div><a href="{{ @site_url }}mail/" title="Mail"><span class="mailread">Mail</span></a></div>
+	</false>
+	</check>
+</check>
+				</div>
+<check if="{{ @checked_user_group >= 40 }}">
+	<check if="{{ @checked_user_group == 40 }}">
+                    <div class="nav_item <check if="{{ strpos(@pagename, 'admin_') !== false }}"> active</check>"><a href="{{ @site_url }}admin/" title="Mod Panel">Mod</a></div>
+	</check>
+	<check if="{{ @checked_user_group == 50 }}">
+				    <div class="nav_item <check if="{{ strpos(@pagename, 'admin_') !== false }}"> active</check>"><a href="{{ @site_url }}admin/" title="Admin">Admin</a></div>
+	</check>
+</check>
+			</div>
+			<div class="cl"></div>
+		</div>
+		<div class="menu_frame">
+			<div class="menu_bar">
+<check if="{{ strpos(@pagename, 'post_') !== false || strpos(@pagename, 'comment_') !== false || strpos(@pagename, 'pool_') !== false }}">
+                <div class="menu_item <check if="{{ @pagename == 'post_all' }}"> active</check>">
+					<a href="{{ @site_url }}post/all/" title="All posts">All posts</a>
+				</div>
+				<div class="menu_item <check if="{{ strpos(@pagename, 'pool_') !== false }}"> active</check>">
+                    <a href="{{ @site_url }}pool/list" title="Pools">Pools</a>
+                </div>
+				<div class="menu_item <check if="{{ @pagename == 'post_3d' }}"> active</check>">
+                    <a href="{{ @site_url }}post/3d" title="3D">3D</a>
+                </div>
+			     <div class="menu_item <check if="{{ @pagename == 'comment_list' }}"> active</check>">
+					<a href="{{ @site_url }}comment/list" title="Comments">Comments</a>
+				</div>
+				<div class="menu_item <check if="{{ @pagename == 'post_add' }}"> active</check>">
+					<a href="{{ @site_url }}post/add" title="Upload">Upload</a>
+				</div>
+                <div class="menu_item">
+					<a href="{{ @site_url }}post/random" title="Random">Random</a>
+				</div>
+				<div class="menu_item">
+					<a href="{{ @site_url }}help/posts">Help</a>
+				</div>
+</check>
+<check if="{{ @pagename=='forum_add' }}">
+				<div class="menu_item">
+					<a href="{{ @site_url }}forum/list">Forum Index</a>
+				</div>
+				<div class="menu_item">
+					<a href="{{ @site_url }}help/forum">Help</a>
+				</div>
+</check>
+<check if="{{ @pagename=='forum_list' }}">
+                <div class="menu_item">
+					<a href="{{ @site_url }}forum/add">New Topic</a>
+				</div>
+				<div class="menu_item">
+					<a href="{{ @site_url }}help/forum">Help</a>
+				</div>
+</check>				
+<check if="{{ @pagename=='forum_view' }}">
+                <div class="menu_item">
+					<a href="{{ @site_url }}forum/add">New Topic</a>
+				</div>
+				<div class="menu_item">
+					<a href="{{ @site_url }}forum/list">Forum Index</a>
+				</div>
+				<div class="menu_item">
+					<a href="{{ @site_url }}help/forum">Help</a>
+				</div>
+</check>				
+<check if="{{ strpos(@pagename, 'mail_') !== false }}">
+                <div class="menu_item">
+					<a href="{{ @site_url }}mail/inbox">Inbox</a>
+				</div>
+				<div class="menu_item">
+					<a href="{{ @site_url }}mail/outbox">Outbox</a>
+				</div>
+                <div class="menu_item">
+					<a href="{{ @site_url }}mail/send">Send Message</a>
+				</div>
+                <div class="menu_item">
+					<a href="{{ @site_url }}mail/conv_list">Conversations</a>
+				</div>
+</check>
+<check if="{{ @pagename=='wiki_view' || @pagename=='wiki_list' || @pagename=='wiki_edit' || @pagename=='wiki_add' || @pagename=='wiki_history' || @pagename=='wiki_revert_history' || @pagename=='wiki_compare' }}">
+                <div class="menu_item <check if="{{ @pagename == 'wiki_list' }}"> active</check>">
+					<a href="{{ @site_url }}wiki/list">List</a>
+				</div>
+				<div class="menu_item <check if="{{ @pagename == 'wiki_add' }}"> active</check>">
+					<a href="{{ @site_url }}wiki/new">New</a>
+				</div>
+                <div class="menu_item">
+					<a href="{{ @site_url }}help/wiki">Help</a>
+				</div>
+</check>
+				
+			</div>
+			<div class="cl"></div>
+		</div>
+<check if="{{ @pagename=='pool_view' || @pagename=='pool_editor' || @pagename=='pool_add' || @pagename=='pool_list' }}">
+					<ul class="flat-list" id="subsubnavbar">
+					<li><a href="{{ @site_url }}pool/list">All pools</a></li>
+					<li><a href="{{ @site_url }}pool/add">Create</a></li>
+					<li><a href="/help/pools">Help</a></li>
+
+	<check if="{{ @pagename=='pool_view' || @pagename=='pool_editor' || @pagename=='pool_edit' }}">
+								<li><a href="#"><a href="{{ @site_url }}pool/edit_options/{{ @poolid }}">Edit</a></a></li>
+		<check if="{{ @isvalid }}">
+								<li><a href="#"><a href="{{ @site_url }}pool/editor/{{ @poolid }}">Editor</a></a></li>
+		</check>						
+	</check>
+</check>
+<check if="{{ @pagename=='wiki_view' }}">
+ 					<ul class="flat-list" id="subsubnavbar">
+					<li><a href="{{ @site_url }}post/list/{{ urlencode(@term_name) }}">Posts ({{ @post_count }})</a></li>
+					<li><a href="{{ @site_url }}wiki/history/{{ @PARAMS.id }}">History</a></li>
+<check if="{{ @canedit }}">
+					<li><a href="{{ @site_url }}wiki/edit/{{ @PARAMS.id }}">Edit</a></li>
+</check>
+<check if="{{ @canrevert }}">
+					<li><a href="{{ @site_url }}wiki/history/revert/{{ @PARAMS.id }}">Revert</a></li>
+</check>
+<check if="{{ @candelete }}">
+					<li><a href="{{ @site_url }}wiki/delete/{{ @PARAMS.id }}">Delete</a></li>
+</check>
+<check if="{{ @canlock }}">
+<check if="{{ @islocked }}">
+<true>
+					<li><a href="{{ @site_url }}wiki/unlock/{{ @PARAMS.id }}">Unlock</a></li>
+</true>
+<false>
+					<li><a href="{{ @site_url }}wiki/lock/{{ @PARAMS.id }}">Lock</a></li>
+</false>
+</check>
+</check>
+
+</check>
+					</ul>

@@ -1,0 +1,41 @@
+<include href="admin_header.html" />
+    <div class="content">
+    <h4>{{ @message }}</h4>
+<check if="{{ count(@comments) == 0 }}">
+<true>
+    <h4>No reported comments.</h4>
+</true>
+<false>
+    <table class="highlightable" style="font-size: 12px; width: 100%;">
+        <tr>
+            <th>Remove?</th>
+            <th>Post ID:</th>
+            <th>Comment:</th>
+            <th>Score:</th>
+            <th>Date Posted:</th>
+            <th>Unflag:</th>
+        </tr>
+    <repeat group="{{ @comments }}" value="{{ @c }}">
+        <tr>
+            <td><a href="/remove/comment/{{ @c.id }}/{{ @c.post_id }}">Remove</a></td>
+            <td><a href="/post/view/{{ @c.post_id }}">{{ @c.post_id }}</a> {{ @c.reason }}</td>
+            <td style="width: 600px; padding: 5px 0px 5px 0px;">{{ @c.comment }} - <span style="color: #770000; font-size: 11px;">{{ @c.ip }}</span><span style="color: #007700;">{{ @c.username }}</span></td>
+            <td><center>{{ @c.score }}</center></td>
+            <td>{{ @c.date }}</td>
+            <td><a href="/admin/reported_comments/unreport/{{ @c.id }}">Unflag</a></td>
+        </tr>
+        <tr>
+            <td><br></td>
+        </tr>
+    </repeat>
+    </table>
+    <br /><br />
+    <div id="paginator">
+    {{ @pagebrowser | raw }}
+    </div>
+</false>
+</check>
+    <div class="cl"></div>
+ </div>
+</div>
+<include href="footer.html" />

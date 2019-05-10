@@ -1,0 +1,79 @@
+<include href="header.html" />
+    <div class="content_frame" />
+    <div class="altcontent" />
+
+<script>
+jQuery(function(){
+    //Hook mode dropdown change event
+	jQuery('select[name="type"]').change(function(){
+        //Check for sort type
+		if (jQuery(this).val() == "userid"){
+            window.location.replace("/stats/userid/{{ @PARAMS.page }}");
+		}else if(jQuery(this).val() == "username"){
+            window.location.replace("/stats/username/{{ @PARAMS.page }}");
+		}else if(jQuery(this).val() == "group"){
+            window.location.replace("/stats/group/{{ @PARAMS.page }}");
+		}else if(jQuery(this).val() == "post_count"){
+            window.location.replace("/stats/posts/{{ @PARAMS.page }}");
+		}else if(jQuery(this).val() == "favorites"){
+            window.location.replace("/stats/favorites/{{ @PARAMS.page }}");
+		}else if(jQuery(this).val() == "user_score"){
+            window.location.replace("/stats/user_score/{{ @PARAMS.page }}");
+		}else if(jQuery(this).val() == "forum_posts"){
+            window.location.replace("/stats/forum_posts/{{ @PARAMS.page }}");
+		}else if(jQuery(this).val() == "tag_edits"){
+            window.location.replace("/stats/tag_edits/{{ @PARAMS.page }}");
+		}
+	});
+});
+</script>
+    <form name="sortstats" method="post" action="">
+    Sort by: <select name="type">
+                <option value="userid" <check if="{{ @sort == 'userid' }}">selected="selected"</check>>ID</option>
+                <option value="username" <check if="{{ @sort == 'username' }}">selected="selected"</check>>Username</option>
+                <option value="group" <check if="{{ @sort == 'group' }}">selected="selected"</check>>Ranking</option>
+                <option value="post_count" <check if="{{ @sort == 'post_count' }}">selected="selected"</check>>Posts</option>
+                <option value="favorites" <check if="{{ @sort == 'favorites' }}">selected="selected"</check>>Favorites</option>
+    <!--            <option value="user_score" <check if="{{ @sort == 'user_score' }}">selected="selected"</check>>Karma</option>  -->
+                <option value="forum_posts" <check if="{{ @sort == 'forum_posts' }}">selected="selected"</check>>Forum Posts</option>
+                <option value="tag_edits" <check if="{{ @sort == 'tag_edits' }}">selected="selected"</check>>Tag Edits</option>
+            </select>
+    </form>
+    <table class="highlightable" width="100%">  
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Rank</th>
+            <th>Posts</th>
+            <th>Favorites</th>
+    <!--    <th>Karma</th>  -->
+            <th>Forum Posts</th>
+            <th>Tag Edits</th>
+            <th>Date Registered</th>
+    <!--      <th>Last Active</th> -->
+        </tr>
+
+<repeat group="{{ @statoutput }}" value="{{ @stats }}">
+        <tr>
+            <td>{{ @stats.id }}</td>
+            <td><a href="/user/{{ @stats.id }}">{{ @stats.user }}</a></td>
+            <td>{{ @stats.group_name }}</td>
+            <td>{{ @stats.post_count }} </td>
+            <td>{{ @stats.fcount }}</td>
+        <!--    <td></td> -->
+            <td>{{ @stats.forum_post_count }}</td>
+            <td>{{ @stats.tag_edit_count }}</td>
+            <td>{{ @stats.signup_date }}</td>
+        <!--    <td></td> -->
+        </tr>
+</repeat>
+
+    </table>
+    <div id="paginator">
+        {{ @pagebrowser | raw }}
+        </div>
+    
+    </div>
+<div class="cl"></div>
+		</div>
+<include href="footer.html" />

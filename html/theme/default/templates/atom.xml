@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Image board</title>
+  <link href="{{ @site_url }}atom" rel="self"/>
+  <link href="{{ @site_url }}post/list/" rel="alternate"/>
+  <id>{{ @site_url }}atom</id>
+  <updated>{{ @currdate }}</updated>
+  <author>
+    <name>Image board</name>
+  </author>
+<repeat group="{{ @posts }}" value="{{ @p }}">
+  <entry>
+    <check if="{{ @p.title == '' }}">
+    <true>
+        <title type="html">Post #{{ @p.id }}</title>
+    </true>
+    <false>
+        <title type="html">{{ @p.title }}</title>
+    </false>
+    </check>
+        <link href="{{ @site_url }}post/view/{{ @p.id }}" rel="alternate"/>
+    <check if="{{ @p.source !== '' }}">
+            <link href="{{ @p.source }}" rel="related"/>
+    </check>
+        <id>{{ @site_url }}post/view/{{ @p.id }}</id>
+        <updated>{{ @p.date }}</updated>
+        <summary type="html">{{ @p.tags }}</summary>
+        <content type="xhtml">
+          <div xmlns="http://www.w3.org/1999/xhtml">
+            <a href="{{ @site_url }}post/view/{{ @p.id }}">
+            <img src="{{ @site_url }}images/{{ @p.hash }}.{{ @p.ext }}"/>
+            </a>
+          </div>
+        </content>
+        <author>
+          <name>{{ @p.username }}</name>
+        </author>
+  </entry>
+</repeat>
+</feed>

@@ -1,0 +1,34 @@
+<include href="header.html" />
+	<div class="content_frame">
+	<div class="altcontent">
+		<table class="highlightable" width="50%">  
+		<tr>
+            <th></th>
+            <th>To</th>
+            <th>Title</th>
+            <th>Date</th>
+		</tr>
+<repeat group="{{ @mail }}" value="{{ @m }}">
+	<check if="{{ @m.has_seen == 0 }}">
+	<true>
+		<tr class="unread">
+            <td class="unreadicon">&nbsp;</td>
+	</true>
+	<false>
+        <tr>
+            <td class="readicon">&nbsp;</td>
+	</false>
+	</check>
+            <td><a href="/user/{{ @m.to_id }}">{{ @m.to_username }}</a></td>
+            <td><a href= "/mail/view/{{ @m.id }}">{{ @m.title }}</a></td>
+			<td>{{ @m.date_now | raw }}</td>
+		</tr>
+</repeat>
+		</table>
+        <div id="paginator">
+        {{ @pagebrowser | raw }}
+        </div>
+	</div>
+	<br />
+	</div>
+<include href="footer.html" />

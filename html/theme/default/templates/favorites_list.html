@@ -1,0 +1,23 @@
+<include href="header.html" />
+<div class="content_frame">
+    <div class="altcontent">
+<check if="{{ @numrows == 0 }}">
+<true>
+            <h1>{{ @t_notfound }}</h1><br />
+</true>
+<false>
+        <div id="account-favorites-list">
+            <table width="100%" class="highlightable"><tr><th width="20%">User</th><th width="80%">Count</th></tr>
+    <repeat group="{{ @userfavinfo }}" value="{{ @f }}">
+                <tr><td><a href="/favorites/view/{{ @f.user_id }}">{{ @f.user }}</a></td><td>{{ @f.fcount }}</td></tr>
+    </repeat>
+            </table>
+        </div>
+		<div id='paginator'>
+        {{ @pagebrowser | raw }}
+        </div>
+</false>
+</check>
+    </div>
+</div>
+<include href="footer.html" />

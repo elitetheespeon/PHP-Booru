@@ -1,0 +1,70 @@
+<include href="header.html" />
+		<div class="content_frame">
+            <div class="forum">
+<repeat group="{{ @mail }}" value="{{ @m }}">
+                    <div class="post" id="{{ @m.id }}">
+                        <div class="post_author">
+                            <h6><a href="/user/{{ @m.from_id }}">{{ @m.from_username }}</a></h6>
+		                    {{ @m.from_title }}
+    <check if="{{ @m.from_avatarinfo }}">
+    <true>
+							<a href="/user/{{ @m.from_id }}"><img class="post_avatar" src="{{ @site_url }}{{ @thumbnail_folder_ava }}/{{ @m.from_id }}_{{ @m.from_avatarinfo.md5 }}.{{ @m.from_avatarinfo.file_ext }}" height="{{ @m.from_avatarinfo.height }}" width="{{ @m.from_avatarinfo.width }}" /></a>
+    </true>
+    <false>
+                            &nbsp;
+    </false>
+    </check>
+                        </div>
+                        <div class="post_content">
+                            <div class="date">{{ @m.date_made | raw }}</div>
+                            <div class="date">Sent by {{ @m.from_username }} to {{ @m.to_username }}</div><br />
+                            <h6>{{ @m.title }}</h6><br />
+                            <div class="post_body"><p>{{ @m.body | raw }}</p></div>
+                            <div class="post_signature">
+                                <hr></hr>
+								{{ @m.from_signature | raw }}
+                            </div>
+                        </div>
+                </div>
+</repeat>
+                <a href="#" onclick="showHide('reply'); return false;">Reply</a>
+                <form method="post" action="/mail/send" id="reply" style="display:none">
+                <div class="post" id="newpostreply">
+                    <div class="post_author">
+                        <h6><a href="/user/{{ @checked_user_id }}">{{ @checked_username }}</a></h6>
+                        {{ @utitle }}
+<check if="{{ @avatarinfo }}">
+<true>
+						<a href="/user/{{ @checked_user_id }}"><img class="post_avatar" src="{{ @site_url }}{{ @thumbnail_folder_ava }}/{{ @checked_user_id }}_{{ @avatarinfo.md5 }}.{{ @avatarinfo.file_ext }}" height="{{ @avatarinfo.height }}" width="{{ @avatarinfo.width }}" /></a>
+</true>
+<false>
+                        &nbsp;
+</false>
+</check>
+                    </div>
+                    <div class="post_content">
+                        <div class="date"></div>
+                        To: <span style="font-weight: bold;">{{ @to_uname }}</span><br /><br />
+                        <div class="post_body">Body: <textarea id="reply_box" name="post" rows="4" cols="6" style="padding-left: 5px; padding-right: 5px; width: 450px; height: 200px;"></textarea></div>
+                        <div class="post_signature"></div>
+                		<div class="post_footer">
+                    	<input type="submit" name="submit" value="Post"/>
+                        <input type="hidden" name="to_user" id="to_user" value="{{ @to_uname }}"/>
+                        <input type="hidden" name="parentid" id="parentid" value="{{ @parentid }}"/>
+                        <input type="hidden" name="title" id="title" value="Re: {{ @titlereply }}"/>
+                        <input type="hidden" name="conf" id="conf" value="0"/>
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+                    //<![CDATA[
+                    document.getElementById('conf').value=1;
+                    //]]></script>
+                </div>
+                </form>
+            <br />
+            <div id="paginator">
+            {{ @pagebrowser | raw }}
+            </div>
+            </div>
+        </div>
+<include href="footer.html" />
