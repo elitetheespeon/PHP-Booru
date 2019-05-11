@@ -1,4 +1,4 @@
-Welcome fellow traveller to PHP-Booru, this is an image board software based on [Danbooru](https://danbooru.donmai.us/), written in PHP. It aims to be a custom implementation of the image board written from the ground up several different times with similar features, and lots of new ones.
+Welcome fellow traveller to PHP-Booru, this is an image board software similar to [Danbooru](https://danbooru.donmai.us/), written in PHP and backed by MySQL. It aims to be a custom implementation of an image board written from the ground up several different times with similar features, and lots of new ones.
 Below you will find information on setting up your own instance of this imageboard.
 
 ## Required Server Software
