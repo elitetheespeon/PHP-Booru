@@ -1,6 +1,8 @@
 Welcome fellow traveller to PHP-Booru, this is an image board software similar to [Danbooru](https://danbooru.donmai.us/), written in PHP and backed by MySQL. It aims to be a custom implementation of an image board written from the ground up several different times with similar features, and lots of new ones.
 Below you will find information on setting up your own instance of this imageboard.
 
+NOTE: AS OF 2020, THIS REPO IS NO LONGER MAINTAINED.
+
 ## Required Server Software
 
 - Webserver with PHP 5.6 support (Tested under [Litespeed](https://www.litespeedtech.com/products/litespeed-web-server)/[Openlitespeed](https://www.litespeedtech.com/open-source/openlitespeed)) and mod_rewrite enabled
