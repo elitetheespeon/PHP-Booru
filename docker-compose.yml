@@ -2,7 +2,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: docker/php56/Dockerfile
+      dockerfile: docker/php84/Dockerfile
     container_name: phpbooru
     ports:
       - "12345:80"
