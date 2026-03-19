@@ -1,9 +1,12 @@
 <?php
-//Kickstart the framework
-$f3=require('../lib/base.php');
-
 //Load all the vendor files
 require_once("../vendor/autoload.php");
+
+//Kickstart the framework
+$f3=Base::instance();
+
+//Keep legacy F3 plugin/modules path (Pagination, etc.) available to the autoloader
+$f3->set('PLUGINS',$f3->get('PLUGINS').';../lib/');
 
 //Load configuration
 $f3->config('config.ini');
