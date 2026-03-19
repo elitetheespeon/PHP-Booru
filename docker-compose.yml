@@ -1,0 +1,47 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php56/Dockerfile
+    container_name: phpbooru
+    ports:
+      - "12345:80"
+    environment:
+      APP_URL: http://10.50.0.53:12345/
+      DB_HOST: db
+      DB_NAME: phpbooru
+      DB_USER: phpbooru
+      DB_PASS: hahaha-I-am-A-Password-123
+      BOORU_DEBUG_LEVEL: "5"
+    volumes:
+      - ./:/var/www/project
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: mysql:5.7
+    container_name: phpbooru-db
+    command: --default-authentication-plugin=mysql_native_password --sql-mode=""
+    environment:
+      MYSQL_DATABASE: phpbooru
+      MYSQL_USER: phpbooru
+      MYSQL_PASSWORD: hahaha-I-am-A-Password-123
+      MYSQL_ROOT_PASSWORD: hahaha-I-am-The-ROOT-Password-123
+    ports:
+      - "33066:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 20s
+    restart: unless-stopped
+
+volumes:
+  db_data:
+

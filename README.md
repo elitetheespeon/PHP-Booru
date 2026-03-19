@@ -1,8 +1,6 @@
 Welcome fellow traveller to PHP-Booru, this is an image board software similar to [Danbooru](https://danbooru.donmai.us/), written in PHP and backed by MySQL. It aims to be a custom implementation of an image board written from the ground up several different times with similar features, and lots of new ones.
 Below you will find information on setting up your own instance of this imageboard.
 
-NOTE: AS OF 2020, THIS REPO IS NO LONGER MAINTAINED.
-
 ## Required Server Software
 
 - Webserver with PHP 5.6 support (Tested under [Litespeed](https://www.litespeedtech.com/products/litespeed-web-server)/[Openlitespeed](https://www.litespeedtech.com/open-source/openlitespeed)) and mod_rewrite enabled
@@ -42,3 +40,62 @@ If you encounter any issues during setup, you can enable more verbose error info
 ## NOTE
 
 There is currently NO installer and all files are provided as is (you still need to set up webserver and mysql yourself), if you want to help by making a self installer or making it easier for others to set up, please submit a PR with the changes.
+
+## Docker Compose (local development)
+
+This repository now includes a Docker setup for local development with:
+
+- PHP 5.6 + Apache (`app` service)
+- MySQL 5.7 (`db` service)
+- Automatic initial schema import from `database.sql`
+
+### Included files
+
+- `docker-compose.yml`
+- `docker/php56/Dockerfile`
+- `docker/php56/apache-vhost.conf`
+- `docker/php56/php-custom.ini`
+- `docker/php56/entrypoint.sh`
+
+### First run
+
+From the project root:
+
+```bash
+docker compose up --build
+```
+
+Then open:
+
+- http://localhost:12345/
+
+On first start, the app container will:
+
+- Copy `html/config_default.ini` to `html/config.ini` if missing
+- Copy `html/webhooks_default.ini` to `html/webhooks.ini` if missing
+- Inject DB/site settings into `html/config.ini` from compose environment variables
+- Run `php composer.phar install` if `vendor/autoload.php` is missing
+
+### Service details
+
+- App container name: `phpbooru-app`
+- DB container name: `phpbooru-db`
+- App URL: `http://localhost:12345/`
+- DB host from app: `db`
+- DB port on host: `3306`
+- Default DB credentials:
+  - database: `phpbooru`
+  - user: `phpbooru`
+  - password: `phpbooru`
+  - root password: `root`
+
+### Reset database state
+
+If you want to re-run a fresh DB import:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
+This removes the named MySQL volume so `database.sql` is imported again.
