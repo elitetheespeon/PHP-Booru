@@ -22,6 +22,9 @@ $f3->set('AUTOLOAD','classes/');
 
 //Login stuff
 $user = new user();
+$f3->set('checked_user_id', null);
+$f3->set('checked_username', '');
+$f3->set('checked_user_group', null);
 if(isset($_COOKIE['user_id']) && is_numeric($_COOKIE['user_id']) && isset($_COOKIE['pass_hash']) && $_COOKIE['pass_hash'] != ""){
 	if(!$user->check_log()){
 		setcookie("user_id","",time()-60*60*24*365);

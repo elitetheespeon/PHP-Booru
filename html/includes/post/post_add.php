@@ -25,7 +25,7 @@ if($userc->banned_ip($ip)){
 
 //Check if user has permission to upload
 if(!$userc->check_log()){
-	if(!$anon_can_upload){
+	if(!$f3->get('anon_can_upload')){
 		$no_upload = true;
 	}
 }else{
@@ -37,7 +37,7 @@ if($no_upload){
 	$f3->set('no_upload',true);
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'ADD_POST', 'NO_PERMISSION');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 }
 
@@ -45,9 +45,10 @@ if($no_upload){
 if(isset($_POST['submit'])){
 	$image = new images();
 	$uploaded_image = false;
+	$uploadarr = array();
 	$parent = '';
 	//Check for remote image download and process
-	if(empty($_FILES['file']) && isset($_POST['source']) && $_POST['source'] != "" && substr($_POST['source'],0,4) == "http" || $_FILES['upload']['error'] != 0 && isset($_POST['source']) && $_POST['source'] != "" && substr($_POST['source'],0,4) == "http"){
+	if(((empty($_FILES['file']) || (($_FILES['file']['error'] ?? 0) != 0)) && isset($_POST['source']) && $_POST['source'] != "" && substr($_POST['source'],0,4) == "http")){
 		$iinfo = $image->getremoteimage($_POST['source']);
 		if($iinfo === false){
 			$error[0]["error"] = $image->geterror()."Could not add the image.";

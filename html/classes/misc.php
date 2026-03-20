@@ -21,6 +21,7 @@ class misc{
 
 		$links = array();
 		$urls = array();
+		$embeddedLinks = array();
 		 
 		if(!$this->isUrlPossible($text)){
             /// Do nothing, because the text is too small for urls.
@@ -79,10 +80,18 @@ class misc{
      * 3   + 3   + 1 + 1 + 2 = 10
      * */
     private function isUrlPossible($text){
+        if($text === null){
+            return false;
+        }
+        $text = (string)$text;
         return 10 <= strlen($text);
     }
 
 	function linebreaks($text){
+		if($text === null){
+			return '';
+		}
+		$text = (string)$text;
 		if(strpos($text,"\r\n") !== false){
 			return str_replace("\r\n","<br />",$text);
 		}
@@ -176,6 +185,10 @@ class misc{
 	for debug. -Assimi
 	*/
 	function swap_bbs_tags($data){
+		if($data === null){
+			return '';
+		}
+		$data = (string)$data;
 		$pattern = array();
 		$replace = array();
 		$pattern[] = '/\[quote\](.*?)\[\/quote\]/i';
@@ -310,7 +323,7 @@ class misc{
 		if($user->banned_ip($ip)){
 		    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'REPORT', 'BANNED');
 			$template=new Template;
-		    echo $template->render('no_permission.html');
+		    echo $template->render('no_permission.html', 'text/html');
 			exit();
 		}
 		
@@ -318,7 +331,7 @@ class misc{
 		if(!$user->check_log() && !$f3->get('anon_report')){
 		    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'REPORT', 'NOT_LOGGED_IN');
 			$template=new Template;
-		    echo $template->render('no_permission.html');
+		    echo $template->render('no_permission.html', 'text/html');
 			exit();
 		}
 		
@@ -370,7 +383,7 @@ class misc{
 		if(!$user->check_log()){
 		    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'REMOVE', 'NO_ACCESS');
 			$template=new Template;
-		    echo $template->render('no_permission.html');
+		    echo $template->render('no_permission.html', 'text/html');
 			exit();
 		}
 		//Check if we have a valid id

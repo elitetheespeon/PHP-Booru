@@ -16,9 +16,12 @@
 			$ttags = array_filter(array_map('trim', explode(" ",trim($search))));
 			$g_rating = '';
 			$g_owner = '';
+			$g_parent = '';
 			$g_tags = '';
+			$parent_patch = '';
 			$ga_tags = array();
 			$ga_other = array();
+			$searchresult = array();
 			$i = 0;
 			$k = 0;
 			$ttagslen = count($ttags);
@@ -307,6 +310,7 @@
 			$g_rating = '';
 			$g_owner = '';
 			$g_tags = '';
+			$parent_patch = '';
 			$ga_tags = array();
 			$ga_other = array();
 			$g_parent = '';

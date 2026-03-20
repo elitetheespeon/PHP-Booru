@@ -88,7 +88,7 @@ class Pagination {
      * @param $current int
      */
     public function setCurrent($current) {
-        if(!$this->routeKeyPrefix)
+        if($this->routeKeyPrefix)
             $current = str_replace($this->routeKeyPrefix,'',$current);
         if(!is_numeric($current)) return;
         if($current <= $this->getMax()) $this->current_page = $current;
@@ -222,7 +222,7 @@ class Pagination {
         $this->fw->set('pg.firstPage',$this->getFirst());
         $this->fw->set('pg.lastPage',$this->getLast());
         $this->fw->set('pg.rangePages',$this->getInRange());
-        $output = \Template::instance()->render($this->template);
+        $output = \Template::instance()->render($this->template, 'text/html');
         $this->fw->clear('pg');
         return $output;
     }

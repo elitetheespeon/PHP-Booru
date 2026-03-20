@@ -7,14 +7,14 @@ $ip = $_SERVER['REMOTE_ADDR'];
 if($user->banned_ip($ip)){
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'POOL_ADD', 'BANNED');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 }
 //Check if user is logged in and has access
 if(!$user->check_log() && !$user->gotpermission('edit_posts')){
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'POOL_ADD', 'NO_PERMISSON');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 }
 //Public is a checkbox so we need some extra validation.

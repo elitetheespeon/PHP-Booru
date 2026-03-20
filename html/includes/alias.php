@@ -6,6 +6,7 @@ $limit = 40;
 $user = new user();
 $misc = new misc();
 $logger = new logger();
+$message = '';
 
 //Check for sent alias information and process
 if(isset($_POST['tag']) && $_POST['tag'] != "" && isset($_POST['alias']) && $_POST['alias'] != ""){

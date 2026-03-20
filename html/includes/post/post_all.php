@@ -11,6 +11,11 @@ $misc = new misc();
 $search = new search();
 $post = new post();
 
+//Template compatibility defaults (PHP 8 strict undefined-key handling)
+if ($f3->get('PARAMS.tags') === null){
+	$f3->set('PARAMS.tags', '');
+}
+
 //Level check for DNP
 if ($f3->get('checked_user_group') >= $f3->get('dnp_level')){
     $dnp = "";
@@ -23,10 +28,12 @@ if ($f3->get('checked_user_group') >= $f3->get('dnp_level')){
 }
 
 //Run the query for posts                
-$query = "SELECT count(id) as count FROM ".$f3->get('post_table')." $dnp ORDER BY id DESC";
+$query = "SELECT count(id) as count FROM ".$f3->get('post_table')." $dnp";
 $result = $db->exec($query);
-$numrows = $result[0]["count"];
-$tags = $new_tag_cache;
+$numrows = (is_array($result) && isset($result[0]["count"])) ? (int)$result[0]["count"] : 0;
+$tags = '';
+$f3->set('posts', array());
+$f3->set('tags', array());
 
 $pages = new Pagination($numrows, $limit);
 $pages->setTemplate('pagination.html');
@@ -61,6 +68,9 @@ if($numrows == 0){
 	//Query for our selected data               
 	$query = "SELECT id, creation_date, hash, score, rating, tags, owner, ext, status, dnp FROM ".$f3->get('post_table')." $dnp ORDER BY id DESC LIMIT $pg_start, $limit";
 	$result = $db->exec($query);
+	if(!is_array($result)){
+		$result = array();
+	}
 	
 	//Start loop through image results.
 	foreach($result as $r){
@@ -114,14 +124,21 @@ if($numrows == 0){
 	$taginc = 0;
 	foreach($gtags as $current){
         $result = $db->exec('SELECT id,tag_type,post_count FROM '.$f3->get('tags_table').' WHERE name=? LIMIT 1',array(1=>$current));
-		$tagcolor = $tag->tag_css_class($result[0]["tag_type"]);
+		if(!is_array($result) || !isset($result[0])){
+			$tagtype = 'general';
+			$postcount = 0;
+		}else{
+			$tagtype = $result[0]["tag_type"];
+			$postcount = $result[0]["post_count"];
+		}
+		$tagcolor = $tag->tag_css_class($tagtype);
 		//$t_decode = urlencode(html_entity_decode($ttags,ENT_NOQUOTES,"UTF-8"));
 		//$c_decode = urlencode(html_entity_decode($current,ENT_NOQUOTES,"UTF-8"));
 		
 	    //Store all tag vars
 	    $tagresult[$taginc]['color'] = $tagcolor;
 	    $tagresult[$taginc]['name'] = $current;
-	    $tagresult[$taginc]['count'] = $result[0]["post_count"];
+	    $tagresult[$taginc]['count'] = $postcount;
 	    $taginc++;
     }
 	//Store tags for template

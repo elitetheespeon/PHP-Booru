@@ -93,12 +93,12 @@
             if(!$user->check_log()){
                 $logger->log_action('', $_SERVER['REMOTE_ADDR'], 'DMAIL_AUTOCOMPLETE', 'NO_PERMISSION');
                 $template=new Template;
-                echo $template->render('no_permission.html');
+                echo $template->render('no_permission.html', 'text/html');
                 exit();
             }
             //Autocomplete processing
-            if ($_REQUEST["to_user"] !== ""){
-                $to_user = $_REQUEST["to_user"];
+            if (($_REQUEST["to_user"] ?? null) !== ""){
+                $to_user = ($_REQUEST["to_user"] ?? null);
                 $to_user = $to_user."%";
                 $result = $db->exec('SELECT user FROM '.$f3->get('user_table').' WHERE user LIKE ? LIMIT 15',array(1=>$to_user));
                 $data = "<ul>";
@@ -121,12 +121,12 @@
             if(!$user->gotpermission('is_admin')){
                 $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'ADMIN_DMAIL_AUTOCOMPLETE', 'NO_ACCESS');
             	$template=new Template;
-                echo $template->render('no_permission.html');
+                echo $template->render('no_permission.html', 'text/html');
             	exit();
             }
             //Autocomplete processing
-            if ($_REQUEST["search"] !== ""){
-                $search = $_REQUEST["search"];
+            if (($_REQUEST["search"] ?? null) !== ""){
+                $search = ($_REQUEST["search"] ?? null);
                 $search = $to_user."%";
                 $result = $db->exec('SELECT user FROM '.$f3->get('user_table').' WHERE user LIKE ? LIMIT 15',array(1=>$search));
                 $data = "<ul>";

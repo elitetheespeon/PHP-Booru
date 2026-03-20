@@ -3,12 +3,17 @@
 $logger = new logger();
 $user = new user();
 $f3->set('user',$user);
+$error = '';
+$f3->set('secondstep', false);
+$f3->set('groupnames', array());
+$f3->set('groupinfo', array());
+$f3->set('gname', '');
 
 //Check if user is an admin
 if(!$user->gotpermission('is_admin')){
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'ADMIN_EDIT_GROUP', 'NO_ACCESS');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 }
 
@@ -61,7 +66,7 @@ if(isset($_POST['check']) && $_POST['check'] == 1){
 }
 
 //Check if first step (dropdown) or second step (editing groups)
-if($_POST['group_name'] !== null){
+if(isset($_POST['group_name']) && $_POST['group_name'] !== null){
 	//Store group name
 	$gname = $_POST['group_name'];
 	//Get group information

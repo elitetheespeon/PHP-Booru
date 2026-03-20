@@ -6,7 +6,7 @@ $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'MAIL_
 $user = new user();
 $misc = new misc();
 $dmail = new dmail();
-$id = $_GET['id'];
+$id = $_GET['id'] ?? $f3->get('PARAMS.id');
 $uname = $f3->get('checked_username');
 $uid = $f3->get('checked_user_id');
  
@@ -14,7 +14,7 @@ $uid = $f3->get('checked_user_id');
 if(!$user->check_log()){
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'MAIL_VIEW', 'NOT_LOGGED_IN');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 }
 

@@ -4,6 +4,10 @@ $logger = new logger();
 $user = new user();
 $misc = new misc();
 $f3->set('user',$user);
+$type1 = "";
+$type2 = "";
+$type3 = "";
+$resultreq = array();
 
 //Number of results per page
 $limit = 50;
@@ -12,13 +16,13 @@ $limit = 50;
 if(!$user->gotpermission('is_admin')){
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'ADMIN_ADD_GROUP', 'NO_ACCESS');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 }
 
 //Save sent information
-$search = $_REQUEST["search"];
-$type = $_REQUEST["type"];
+$search = ($_REQUEST["search"] ?? null);
+$type = ($_REQUEST["type"] ?? null);
 //Check if searching or viewing all
 if ($search !== ""){
     //Check which type of search

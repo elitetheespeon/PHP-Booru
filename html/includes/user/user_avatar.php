@@ -24,14 +24,17 @@ if(!$userc->check_log()){
 	$f3->set('no_upload',true);
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'CHANGE_AVATAR', 'NO_PERMISSION');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 }
 
 //Get avatar info
 $avaresult = $db->exec('SELECT * FROM '.$f3->get('avatar_table').' WHERE userid = ?',array(1=>$f3->get('checked_user_id')));
-$avainfo = $avaresult[0];
+$avainfo = array();
 $avacheck = count($avaresult);
+if($avacheck > 0){
+	$avainfo = $avaresult[0];
+}
 
 //Check if data was posted
 if(isset($_POST['submit'])){
@@ -52,20 +55,26 @@ if(isset($_POST['submit'])){
                 $delete = $db->exec('DELETE FROM '.$f3->get('avatar_table').' WHERE id = ?',array(1=>$avainfo["id"]));
             }
             //Some final checks
-            $isinfo = getimagesize("./avatars/".$f3->get('checked_user_id')."_".$iinfo);
-    		$ext = explode(".", $iinfo);
-    		$ext = $ext[count($ext) - 1];
-            //Save avatar info to database
-            $insert = $db->exec('INSERT INTO '.$f3->get('avatar_table').' (userid, file_ext, height, width, md5) VALUES(?, ?, ?, ?, ?)',array(1=>$f3->get('checked_user_id'),2=>$ext,3=>$isinfo[1],4=>$isinfo[0],5=>md5_file("./avatars/".$f3->get('checked_user_id')."_".$iinfo)));
-            if($insert == false){
-    			//Failed
-    			$error1 = "Failed to upload image.".$query;
-    			unlink("./avatars/".$f3->get('checked_user_id')."_".$iinfo);
-                $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'CHANGE_AVATAR', 'UPLOAD_ERROR');
+            $avatar_path = "./avatars/".$f3->get('checked_user_id')."_".$iinfo;
+            if(!file_exists($avatar_path)){
+                $error1 = "Failed to upload image.";
+                $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'CHANGE_AVATAR', 'UPLOAD_ERROR_MISSING_FILE');
             }else{
-    			//Success
-                $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'CHANGE_AVATAR', 'SUCCESS');
-                $f3->reroute('/user/avatar');
+                $isinfo = getimagesize($avatar_path);
+			    $ext = explode(".", $iinfo);
+			    $ext = $ext[count($ext) - 1];
+                //Save avatar info to database
+                $insert = $db->exec('INSERT INTO '.$f3->get('avatar_table').' (userid, file_ext, height, width, md5) VALUES(?, ?, ?, ?, ?)',array(1=>$f3->get('checked_user_id'),2=>$ext,3=>$isinfo[1],4=>$isinfo[0],5=>md5_file($avatar_path)));
+                if($insert == false){
+				    //Failed
+				    $error1 = "Failed to upload image.".$query;
+				    unlink("./avatars/".$f3->get('checked_user_id')."_".$iinfo);
+                    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'CHANGE_AVATAR', 'UPLOAD_ERROR');
+                }else{
+				    //Success
+                    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'CHANGE_AVATAR', 'SUCCESS');
+                    $f3->reroute('/user/avatar');
+                }
             }
 		}
 	//No valid data was processed, must be nothing

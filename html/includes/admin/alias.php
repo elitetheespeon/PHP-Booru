@@ -5,12 +5,14 @@ $user = new user();
 $tagc = new tag();
 $misc = new misc();
 $f3->set('user',$user);
+$f3->set('app_rej_menu', false);
+$f3->set('pendingresult', array());
 
 //Check if user is an admin
 if(!$user->gotpermission('is_admin')){
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'ADMIN_ALIAS', 'NO_ACCESS');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 }
 

@@ -8,14 +8,14 @@ $f3->set('user',$user);
 if(!$user->gotpermission('is_admin')){
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'ADMIN_VIEW_LOG_AUTOCOMPLETE', 'NO_ACCESS');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 }
 
 //Autocomplete processing
-if ($_REQUEST["search"] !== "" && $_REQUEST["type"] !== ""){
-    $search = $_REQUEST["search"];
-    $type = $_REQUEST["type"];
+if (($_REQUEST["search"] ?? null) !== "" && ($_REQUEST["type"] ?? null) !== ""){
+    $search = ($_REQUEST["search"] ?? null);
+    $type = ($_REQUEST["type"] ?? null);
     switch ($type){
         case 1:
             $search = $search."%";
@@ -36,7 +36,7 @@ if ($_REQUEST["search"] !== "" && $_REQUEST["type"] !== ""){
 
     $data = "<ul>";
 
-    if(count($info !== 0)){
+    if(count($info) !== 0){
         foreach ($info as $return){
             $data .= "<li>".$return["search"]."</li>";    
         }

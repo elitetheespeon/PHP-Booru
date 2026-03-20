@@ -13,7 +13,7 @@ $f3->route(array(
     	$f3->set('pagename','post_list');
     	include 'includes/post/post_list.php';
     	$template=new Template;
-        echo $template->render('post_list.html');
+        echo $template->render('post_list.html', 'text/html');
     }
 );
 
@@ -25,7 +25,7 @@ $f3->route(array(
     	$f3->set('pagename','post_all');
     	include 'includes/post/post_all.php';
     	$template=new Template;
-        echo $template->render('post_list.html');
+        echo $template->render('post_list.html', 'text/html');
     }
 );
 
@@ -37,7 +37,7 @@ $f3->route(array(
     	$f3->set('pagename','post_view');
     	include 'includes/post/post_view.php';
     	$template=new Template;
-        echo $template->render('post_view.html');
+        echo $template->render('post_view.html', 'text/html');
     }
 );
 
@@ -47,7 +47,7 @@ $f3->route('GET|POST /post/add',
     	$f3->set('pagename','post_add');
     	include 'includes/post/post_add.php';
     	$template=new Template;
-        echo $template->render('post_add.html');
+        echo $template->render('post_add.html', 'text/html');
     }
 );
 
@@ -70,7 +70,7 @@ $f3->route('GET|POST /post/3d',
     	$f3->set('pagename','post_3d');
     	include 'includes/post/post_3d.php';
     	$template=new Template;
-        echo $template->render('post_3d.html');
+        echo $template->render('post_3d.html', 'text/html');
     }
 );
 
@@ -112,7 +112,7 @@ $f3->route(array(
     	$f3->set('pagename','pool_view');
     	include 'includes/pool/pool_view.php';
     	$template=new Template;
-        echo $template->render('pool_view.html');
+        echo $template->render('pool_view.html', 'text/html');
     }
 );
 
@@ -124,7 +124,7 @@ $f3->route('GET|POST /pool/edit_options/@id',
     	$f3->set('pagename','pool_edit');
     	include 'includes/pool/pool_edit.php';
     	$template=new Template;
-        echo $template->render('pool_edit.html');
+        echo $template->render('pool_edit.html', 'text/html');
     }
 );
 
@@ -137,7 +137,7 @@ $f3->route(array(
     	$f3->set('pagename','pool_editor');
     	include 'includes/pool/pool_editor.php';
     	$template=new Template;
-        echo $template->render('pool_editor.html');
+        echo $template->render('pool_editor.html', 'text/html');
     }
 );
 
@@ -149,7 +149,7 @@ $f3->route(array(
     	$f3->set('pagename','pool_list');
     	include 'includes/pool/pool_list.php';
     	$template=new Template;
-        echo $template->render('pool_list.html');
+        echo $template->render('pool_list.html', 'text/html');
     }
 );
 
@@ -159,7 +159,7 @@ $f3->route('GET|POST /pool/add',
     	$f3->set('pagename','pool_add');
     	include 'includes/pool/pool_add.php';
     	$template=new Template;
-        echo $template->render('pool_add.html');
+        echo $template->render('pool_add.html', 'text/html');
     }
 );
 
@@ -172,7 +172,7 @@ $f3->route('GET|POST /user/login/00',
     	$f3->set('pagename','login');
     	include 'includes/user/login.php';
     	$template=new Template;
-        echo $template->render('login.html');
+        echo $template->render('login.html', 'text/html');
     }
 );
 
@@ -184,7 +184,7 @@ $f3->route('GET|POST /user/register',
     	$f3->set('pagename','register');
     	include 'includes/user/register.php';
     	$template=new Template;
-        echo $template->render('register.html');
+        echo $template->render('register.html', 'text/html');
     }
 );
 $f3->route(array(
@@ -195,7 +195,7 @@ $f3->route(array(
     	$f3->set('pagename','reset_password');
     	include 'includes/user/reset_password.php';
     	$template=new Template;
-        echo $template->render('reset_password.html');
+        echo $template->render('reset_password.html', 'text/html');
     }
 );
 
@@ -205,7 +205,7 @@ $f3->route('GET|POST /user/home',
     	$f3->set('pagename','user_home');
     	include 'includes/user/user_home.php';
     	$template=new Template;
-        echo $template->render('user_home.html');
+        echo $template->render('user_home.html', 'text/html');
     }
 );
 
@@ -215,7 +215,7 @@ $f3->route('GET|POST /user/options',
     	$f3->set('pagename','user_options');
     	include 'includes/user/user_options.php';
     	$template=new Template;
-        echo $template->render('user_options.html');
+        echo $template->render('user_options.html', 'text/html');
     }
 );
 
@@ -225,7 +225,7 @@ $f3->route('GET|POST /user/avatar',
     	$f3->set('pagename','user_avatar');
     	include 'includes/user/user_avatar.php';
     	$template=new Template;
-        echo $template->render('user_avatar.html');
+        echo $template->render('user_avatar.html', 'text/html');
     }
 );
 
@@ -235,7 +235,7 @@ $f3->route('GET|POST /user/changepass',
     	$f3->set('pagename','user_changepass');
     	include 'includes/user/change_password.php';
     	$template=new Template;
-        echo $template->render('change_password.html');
+        echo $template->render('change_password.html', 'text/html');
     }
 );
 
@@ -243,11 +243,17 @@ $f3->route(array(
     'GET /user/@id',
     'GET /user/name/@uname'),
     function ($f3) {
-    	global $db;
-    	$f3->set('pagename','user_profile');
-    	include 'includes/user/user_profile.php';
-    	$template=new Template;
-        echo $template->render('user_profile.html');
+		global $db;
+		$f3->set('pagename','user_profile');
+		include 'includes/user/user_profile.php';
+		$template=new Template;
+        echo $template->render('user_profile.html', 'text/html');
+    }
+);
+
+$f3->route('GET /user/tag_edits/@id',
+    function ($f3) {
+        $f3->reroute('/stats/tag_edits/1');
     }
 );
 
@@ -276,7 +282,7 @@ $f3->route('GET|POST /mail/view/@id',
     	$f3->set('pagename','mail_view');
     	include 'includes/mail/mail_view.php';
     	$template=new Template;
-        echo $template->render('mail_view.html');
+        echo $template->render('mail_view.html', 'text/html');
     }
 );
 
@@ -288,7 +294,7 @@ $f3->route(array(
     	$f3->set('pagename','mail_inbox');
     	include 'includes/mail/mail_inbox.php';
     	$template=new Template;
-        echo $template->render('mail_inbox.html');
+        echo $template->render('mail_inbox.html', 'text/html');
     }
 );
 
@@ -300,7 +306,7 @@ $f3->route(array(
     	$f3->set('pagename','mail_outbox');
     	include 'includes/mail/mail_outbox.php';
     	$template=new Template;
-        echo $template->render('mail_outbox.html');
+        echo $template->render('mail_outbox.html', 'text/html');
     }
 );
 
@@ -312,7 +318,7 @@ $f3->route(array(
     	$f3->set('pagename','mail_send');
     	include 'includes/mail/mail_send.php';
     	$template=new Template;
-        echo $template->render('mail_send.html');
+        echo $template->render('mail_send.html', 'text/html');
     }
 );
 
@@ -324,7 +330,7 @@ $f3->route(array(
     	$f3->set('pagename','mail_conv_view');
     	include 'includes/mail/mail_conv_view.php';
     	$template=new Template;
-        echo $template->render('mail_conv_view.html');
+        echo $template->render('mail_conv_view.html', 'text/html');
     }
 );
 
@@ -336,7 +342,7 @@ $f3->route(array(
     	$f3->set('pagename','mail_conv_list');
     	include 'includes/mail/mail_conv_list.php';
     	$template=new Template;
-        echo $template->render('mail_conv_list.html');
+        echo $template->render('mail_conv_list.html', 'text/html');
     }
 );
 
@@ -349,7 +355,7 @@ $f3->route(array(
     	$f3->set('pagename','forum_view');
     	include 'includes/forum/forum_view.php';
     	$template=new Template;
-        echo $template->render('forum_view.html');
+        echo $template->render('forum_view.html', 'text/html');
     }
 );
 
@@ -361,7 +367,7 @@ $f3->route(array(
     	$f3->set('pagename','forum_list');
     	include 'includes/forum/forum_list.php';
     	$template=new Template;
-        echo $template->render('forum_list.html');
+        echo $template->render('forum_list.html', 'text/html');
     }
 );
 
@@ -374,7 +380,7 @@ $f3->route(array(
     	$f3->set('pagename','forum_add');
     	include 'includes/forum/forum_add.php';
     	$template=new Template;
-        echo $template->render('forum_add.html');
+        echo $template->render('forum_add.html', 'text/html');
     }
 );
 
@@ -435,7 +441,7 @@ $f3->route(array(
     	$f3->set('pagename','comment_list');
     	include 'includes/comment_list.php';
     	$template=new Template;
-        echo $template->render('comment_list.html');
+        echo $template->render('comment_list.html', 'text/html');
     }
 );
 
@@ -463,7 +469,7 @@ $f3->route(array(
     	$f3->set('pagename','tag_alias');
     	include 'includes/alias.php';
     	$template=new Template;
-        echo $template->render('tag_alias.html');
+        echo $template->render('tag_alias.html', 'text/html');
     }
 );
 
@@ -473,7 +479,7 @@ $f3->route('GET /help',
     	global $db;
     	$f3->set('pagename','help_home');
     	$template=new Template;
-        echo $template->render('help_home.html');
+        echo $template->render('help_home.html', 'text/html');
     }
 );
 
@@ -482,7 +488,7 @@ $f3->route('GET /help/posts',
     	global $db;
     	$f3->set('pagename','help_posts');
     	$template=new Template;
-        echo $template->render('help_posts.html');
+        echo $template->render('help_posts.html', 'text/html');
     }
 );
 
@@ -491,7 +497,7 @@ $f3->route('GET /help/pools',
     	global $db;
     	$f3->set('pagename','help_pools');
     	$template=new Template;
-        echo $template->render('help_pools.html');
+        echo $template->render('help_pools.html', 'text/html');
     }
 );
 
@@ -500,7 +506,7 @@ $f3->route('GET /help/ratings',
     	global $db;
     	$f3->set('pagename','help_ratings');
     	$template=new Template;
-        echo $template->render('help_ratings.html');
+        echo $template->render('help_ratings.html', 'text/html');
     }
 );
 
@@ -509,7 +515,7 @@ $f3->route('GET /help/forum',
     	global $db;
     	$f3->set('pagename','help_forum');
     	$template=new Template;
-        echo $template->render('help_forum.html');
+        echo $template->render('help_forum.html', 'text/html');
     }
 );
 
@@ -518,7 +524,7 @@ $f3->route('GET /help/wiki',
     	global $db;
     	$f3->set('pagename','help_wiki');
     	$template=new Template;
-        echo $template->render('help_wiki.html');
+        echo $template->render('help_wiki.html', 'text/html');
     }
 );
 
@@ -529,7 +535,7 @@ $f3->route('GET /admin',
     	$f3->set('pagename','admin_home');
     	$template=new Template;
         include 'includes/admin/home.php';
-        echo $template->render('admin_home.html');
+        echo $template->render('admin_home.html', 'text/html');
     }
 );
 
@@ -540,7 +546,7 @@ $f3->route('GET|POST /admin/add_group',
     	$template=new Template;
         $user=new user;
         include 'includes/admin/add_group.php';
-        echo $template->render('admin_add_group.html');
+        echo $template->render('admin_add_group.html', 'text/html');
     }
 );
 
@@ -553,7 +559,7 @@ $f3->route(array(
     	$template=new Template;
         $user=new user;
         include 'includes/admin/edit_group.php';
-        echo $template->render('admin_edit_group.html');
+        echo $template->render('admin_edit_group.html', 'text/html');
     }
 );
 
@@ -566,7 +572,7 @@ $f3->route(array(
     	$template=new Template;
         $user=new user;
         include 'includes/admin/alias.php';
-        echo $template->render('admin_alias.html');
+        echo $template->render('admin_alias.html', 'text/html');
     }
 );
 
@@ -579,7 +585,7 @@ $f3->route(array(
     	$template=new Template;
         $user=new user;
         include 'includes/admin/ban_user.php';
-        echo $template->render('admin_ban_user.html');
+        echo $template->render('admin_ban_user.html', 'text/html');
     }
 );
 
@@ -594,7 +600,7 @@ $f3->route(array(
     	$template=new Template;
         $user=new user;
         include 'includes/admin/comments.php';
-        echo $template->render('admin_comments.html');
+        echo $template->render('admin_comments.html', 'text/html');
     }
 );
 
@@ -609,7 +615,7 @@ $f3->route(array(
     	$template=new Template;
         $user=new user;
         include 'includes/admin/posts.php';
-        echo $template->render('admin_posts.html');
+        echo $template->render('admin_posts.html', 'text/html');
     }
 );
 
@@ -620,7 +626,7 @@ $f3->route('GET|POST /admin/edit_user',
     	$template=new Template;
         $user=new user;
         include 'includes/admin/edit_user.php';
-        echo $template->render('admin_edit_user.html');
+        echo $template->render('admin_edit_user.html', 'text/html');
     }
 );
 
@@ -631,7 +637,7 @@ $f3->route('GET|POST /admin/options',
     	$template=new Template;
         $user=new user;
         include 'includes/admin/options.php';
-        echo $template->render('admin_options.html');
+        echo $template->render('admin_options.html', 'text/html');
     }
 );
 
@@ -644,7 +650,7 @@ $f3->route(array(
     	$template=new Template;
         $user=new user;
         include 'includes/admin/mail_list.php';
-        echo $template->render('admin_mail_list.html');
+        echo $template->render('admin_mail_list.html', 'text/html');
     }
 );
 
@@ -657,7 +663,7 @@ $f3->route('GET|POST /admin/mail_view/@id',
     	$template=new Template;
         $user=new user;
         include 'includes/admin/mail_view.php';
-        echo $template->render('admin_mail_view.html');
+        echo $template->render('admin_mail_view.html', 'text/html');
     }
 );
 
@@ -677,7 +683,7 @@ $f3->route(array(
     	$template=new Template;
         $user=new user;
         include 'includes/admin/view_log.php';
-        echo $template->render('admin_view_log.html');
+        echo $template->render('admin_view_log.html', 'text/html');
     }
 );
 
@@ -688,7 +694,7 @@ $f3->route('GET|POST /admin/mass_parent',
     	$template=new Template;
         $user=new user;
         include 'includes/admin/mass_parent.php';
-        echo $template->render('admin_mass_parent.html');
+        echo $template->render('admin_mass_parent.html', 'text/html');
     }
 );
 
@@ -752,7 +758,7 @@ $f3->route(array(
 $f3->route('GET /terms',
     function ($f3) {
     	$template=new Template;
-        echo $template->render('terms_of_service.html');
+        echo $template->render('terms_of_service.html', 'text/html');
     }
 );
 
@@ -761,7 +767,7 @@ $f3->route('GET /chat',
     	$user = new user();
     	$f3->set('user',$user);
     	$template=new Template;
-        echo $template->render('chat.html');
+        echo $template->render('chat.html', 'text/html');
     }
 );
 

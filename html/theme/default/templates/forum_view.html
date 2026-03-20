@@ -37,7 +37,7 @@
     </false>
     </check>
                                 <a href="#" onclick="javascript:document.getElementById('reply_box').value=document.getElementById('reply_box').value+'[quote]{{ @p.authorname }} said:\r\n{{ @p.body_quoted }}[/quote]'; showHide('reply'); return false;">Quote</a>
-    <check if="{{ @candelete && @p.id !== p.creation_post }}">
+    <check if="{{ @candelete && @p.id !== @p.creation_post }}">
                                  | <a href="/forum/remove/post/{{ @PARAMS.id }}/{{ @p.id }}">Remove</a><br />
     </check>
     <check if="{{ @checked_user_id == @p.author || @canedit }}">

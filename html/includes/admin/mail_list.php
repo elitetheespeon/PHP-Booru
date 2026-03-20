@@ -14,7 +14,7 @@ $limit = 20;
 if(!$user->gotpermission('is_admin')){
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'ADMIN_DMAIL_LIST', 'NO_ACCESS');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 }
 

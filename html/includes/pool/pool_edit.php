@@ -8,7 +8,7 @@ $ip = $_SERVER['REMOTE_ADDR'];
 if($user->banned_ip($ip)){
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'EDIT_POOL', 'BANNED');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 }
 
@@ -16,7 +16,7 @@ if($user->banned_ip($ip)){
 if(!$user->check_log()){
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'EDIT_POOL', 'NOT_LOGGED_IN');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 }
 
@@ -46,7 +46,7 @@ if(!$user->gotpermission('delete_posts')){
     }else{
         $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'EDIT_POOL', 'NO_ACCESS');
     	$template=new Template;
-        echo $template->render('no_permission.html');
+        echo $template->render('no_permission.html', 'text/html');
     	exit();
     }
 }

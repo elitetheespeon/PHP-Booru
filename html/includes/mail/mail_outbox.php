@@ -16,7 +16,7 @@ $mailresult = array();
 if(!$user->check_log()){
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'MAIL_OUTBOX', 'NOT_LOGGED_IN');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 }
 

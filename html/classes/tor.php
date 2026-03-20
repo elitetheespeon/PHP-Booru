@@ -37,8 +37,8 @@ class tor
   private function __construct()
   {
     $this->target = implode('.', array_reverse(explode('.', $_SERVER['REMOTE_ADDR'])));
-    $this->exithost = implode('.', array_reverse(explode('.', $_SERVER["SERVER_ADDR"])));
-    $this->port = $_SERVER["SERVER_PORT"];
+    $this->exithost = implode('.', array_reverse(explode('.', ($_SERVER["SERVER_ADDR"] ?? null))));
+    $this->port = ($_SERVER["SERVER_PORT"] ?? null);
   }
 
   /**
@@ -120,20 +120,19 @@ class tor
     {
       $isActive = false;
 
-      //Check Cloudflare header
-      if($_SERVER["HTTP_CF_IPCOUNTRY"]){
+      //Check Cloudflare header first when available
+      if (isset($_SERVER["HTTP_CF_IPCOUNTRY"]) && $_SERVER["HTTP_CF_IPCOUNTRY"] !== "") {
         //Check for TOR country code
-        if($_SERVER["HTTP_CF_IPCOUNTRY"] == "T1"){
+        if ($_SERVER["HTTP_CF_IPCOUNTRY"] == "T1") {
           $isActive = true;
         }
-        
+
         //Send back status
         $this->cache[$this->target] = $isActive;
         return $this->cache[$this->target];
       }
 
-      /**
-      //Use default logic
+      //Use default logic when Cloudflare header is unavailable
       $query = array(
         $this->target,
         $this->port,
@@ -159,7 +158,6 @@ class tor
       }
 
       $this->cache[$this->target] = $isActive;
-      **/
     }
     
     return $this->cache[$this->target];

@@ -13,6 +13,19 @@ class webhook{
         $this->http_client = new GuzzleHttp\Client([
             'headers' => [ 'Content-Type' => 'application/json' ]
         ]);
+        $this->f3->set('webhook_embed', array(
+            'author_name' => '',
+            'author_id' => '',
+            'author_avatar_md5' => '',
+            'author_avatar_ext' => '',
+            'post_thumbnail_url' => '',
+            'post_id' => '',
+            'post_title' => '',
+            'post_description' => '',
+            'post_tags' => '',
+            'post_date' => '',
+            'post_rating' => ''
+        ));
         $this->f3->config('webhooks.ini',true);
 	}
 

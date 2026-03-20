@@ -8,7 +8,7 @@ $f3->set('user',$user);
 if(!$user->gotpermission('is_admin') || !$user->gotpermission('approve_posts')){
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'ADMIN_HOME', 'NO_ACCESS');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 }
 ?>

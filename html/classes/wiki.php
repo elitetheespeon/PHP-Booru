@@ -19,10 +19,11 @@ class wiki{
 		global $f3, $db;
         //Number of wiki articles/page
         $limit = 40;
+		$resultwiki = array();
 	    //Log page hit
 	    $this->logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'WIKI_LIST', $f3->get('PARAMS.page'));
 	    //Get total number of wiki articles
-	    $wikicount = $db->exec('SELECT COUNT(id) as count FROM '.$f3->get('wiki_table'),array(1=>$postnum,2=>$poolid,3=>$postid));
+	    $wikicount = $db->exec('SELECT COUNT(id) as count FROM '.$f3->get('wiki_table'));
 	    $numrows = $wikicount[0]["count"];
         //Pagination
         $pages = new Pagination($numrows, $limit);
@@ -56,7 +57,7 @@ class wiki{
 		//Process template
 		$f3->set('pagename','wiki_list');
 		$template=new Template;
-    	echo $template->render('wiki_list.html');
+    	echo $template->render('wiki_list.html', 'text/html');
 	}
 
 	function get_recent_updated(){
@@ -67,7 +68,7 @@ class wiki{
 		foreach($recent as $key => $tag){
 		    $recent[$key]['color'] = $this->tag->tag_css_class($tag['tag_type']);
 		}
-		if(count($recent !== 0)){
+		if(count($recent) !== 0){
 			return $recent;
 		}else{
 			return false;
@@ -176,7 +177,7 @@ class wiki{
 		//Process template
 		$f3->set('pagename','wiki_not_found');
 		$template=new Template;
-    	echo $template->render('wiki_not_found.html');	
+    	echo $template->render('wiki_not_found.html', 'text/html');	
     	exit();
 	}
 
@@ -198,12 +199,13 @@ class wiki{
 		}else{
 		    $dnp = "AND dnp=0 AND status = 'active'";
 		}
+		$wiki_tag = $resultwiki[0]["title"];
 
         //Get last 5 uploaded posts for tag
-		$resultupinfo = $db->exec('SELECT p.id, hash, tags, owner, rating, score, ext, dnp, status FROM '.$f3->get('poststags_table').' as pt JOIN '.$f3->get('post_table').' as p ON (p.id = pt.post_id) WHERE pt.tag_id = (SELECT id FROM '.$f3->get('tags_table').' WHERE name = ? LIMIT 1) '.$dnp.' ORDER BY p.id DESC LIMIT 9',array(1=>$resultwiki[0]["title"]));
+		$resultupinfo = $db->exec('SELECT p.id, hash, tags, owner, rating, score, ext, dnp, status FROM '.$f3->get('poststags_table').' as pt JOIN '.$f3->get('post_table').' as p ON (p.id = pt.post_id) WHERE pt.tag_id = (SELECT id FROM '.$f3->get('tags_table').' WHERE name = ? OR LOWER(name) = LOWER(?) LIMIT 1) '.$dnp.' ORDER BY p.id DESC LIMIT 9',array(1=>$wiki_tag,2=>$wiki_tag));
 
 		//Get count of posts
-		$resultcount = $db->exec('SELECT count(p.id) as count FROM '.$f3->get('poststags_table').' as pt JOIN '.$f3->get('post_table').' as p ON (p.id = pt.post_id) WHERE pt.tag_id = (SELECT id FROM '.$f3->get('tags_table').' WHERE name = ? LIMIT 1) '.$dnp.'',array(1=>$resultwiki[0]["title"]));
+		$resultcount = $db->exec('SELECT count(p.id) as count FROM '.$f3->get('poststags_table').' as pt JOIN '.$f3->get('post_table').' as p ON (p.id = pt.post_id) WHERE pt.tag_id = (SELECT id FROM '.$f3->get('tags_table').' WHERE name = ? OR LOWER(name) = LOWER(?) LIMIT 1) '.$dnp.'',array(1=>$wiki_tag,2=>$wiki_tag));
         
         //Make sure we got posts back
         if ($resultcount[0]['count'] !== 0){
@@ -211,6 +213,15 @@ class wiki{
 	        foreach($resultupinfo as $key => $row){
 				//Get the thumbnail image
 			    $resultupinfo[$key]["imagestr"] = $this->post->get_thumbnail($row['ext'],$row['hash']);
+			    if($row['status'] == "deleted"){
+			    	$resultupinfo[$key]["imageclass"] = "deleted";
+			    }elseif($row['status'] == "pending"){
+			    	$resultupinfo[$key]["imageclass"] = "pending";
+			    }elseif($row['dnp'] == 1){
+			    	$resultupinfo[$key]["imageclass"] = "dnp";
+			    }else{
+			    	$resultupinfo[$key]["imageclass"] = "";
+			    }
 	        	//Clean for javascript
 	        	$resultupinfo[$key]["ownerjs"] = mb_strtolower(str_replace('\\',"&#92;",str_replace(' ','%20',str_replace("'","&#039;",$row['owner']))),'UTF-8');
 	        	$resultupinfo[$key]["ratingjs"] = mb_strtolower($row['rating'],'UTF-8');
@@ -227,6 +238,10 @@ class wiki{
     		$islocked = true;
     	}
 		//Get permissions
+		$f3->set('canedit',false);
+		$f3->set('canrevert',false);
+		$f3->set('candelete',false);
+		$f3->set('canlock',false);
 		if($this->user->gotpermission('edit_wiki')){
 			$f3->set('canedit',true);
 		}
@@ -259,7 +274,7 @@ class wiki{
 		//Process template
 		$f3->set('pagename','wiki_view');
 		$template=new Template;
-    	echo $template->render('wiki_view.html');
+    	echo $template->render('wiki_view.html', 'text/html');
 	}
 
 	function view(){
@@ -286,12 +301,13 @@ class wiki{
 		}else{
 		    $dnp = "AND dnp=0 AND status = 'active'";
 		}
+		$wiki_tag = $resultwiki[0]["title"];
 
         //Get last 5 uploaded posts for tag
-		$resultupinfo = $db->exec('SELECT p.id, hash, tags, owner, rating, score, ext, dnp, status FROM '.$f3->get('poststags_table').' as pt JOIN '.$f3->get('post_table').' as p ON (p.id = pt.post_id) WHERE pt.tag_id = (SELECT id FROM '.$f3->get('tags_table').' WHERE name = ?  LIMIT 1) '.$dnp.' ORDER BY p.id DESC LIMIT 9',array(1=>$resultwiki[0]["title"]));
+		$resultupinfo = $db->exec('SELECT p.id, hash, tags, owner, rating, score, ext, dnp, status FROM '.$f3->get('poststags_table').' as pt JOIN '.$f3->get('post_table').' as p ON (p.id = pt.post_id) WHERE pt.tag_id = (SELECT id FROM '.$f3->get('tags_table').' WHERE name = ? OR LOWER(name) = LOWER(?)  LIMIT 1) '.$dnp.' ORDER BY p.id DESC LIMIT 9',array(1=>$wiki_tag,2=>$wiki_tag));
 
 		//Get count of posts
-		$resultcount = $db->exec('SELECT count(p.id) as count FROM '.$f3->get('poststags_table').' as pt JOIN '.$f3->get('post_table').' as p ON (p.id = pt.post_id) WHERE pt.tag_id = (SELECT id FROM '.$f3->get('tags_table').' WHERE name = ?  LIMIT 1) '.$dnp.'',array(1=>$resultwiki[0]["title"]));
+		$resultcount = $db->exec('SELECT count(p.id) as count FROM '.$f3->get('poststags_table').' as pt JOIN '.$f3->get('post_table').' as p ON (p.id = pt.post_id) WHERE pt.tag_id = (SELECT id FROM '.$f3->get('tags_table').' WHERE name = ? OR LOWER(name) = LOWER(?)  LIMIT 1) '.$dnp.'',array(1=>$wiki_tag,2=>$wiki_tag));
         
         //Make sure we got posts back
         if ($resultcount[0]['count'] !== 0){
@@ -299,6 +315,15 @@ class wiki{
 	        foreach($resultupinfo as $key => $row){
 				//Get the thumbnail image
 			    $resultupinfo[$key]["imagestr"] = $this->post->get_thumbnail($row['ext'],$row['hash']);
+			    if($row['status'] == "deleted"){
+			    	$resultupinfo[$key]["imageclass"] = "deleted";
+			    }elseif($row['status'] == "pending"){
+			    	$resultupinfo[$key]["imageclass"] = "pending";
+			    }elseif($row['dnp'] == 1){
+			    	$resultupinfo[$key]["imageclass"] = "dnp";
+			    }else{
+			    	$resultupinfo[$key]["imageclass"] = "";
+			    }
 	        	//Clean for javascript
 	        	$resultupinfo[$key]["ownerjs"] = mb_strtolower(str_replace('\\',"&#92;",str_replace(' ','%20',str_replace("'","&#039;",$row['owner']))),'UTF-8');
 	        	$resultupinfo[$key]["ratingjs"] = mb_strtolower($row['rating'],'UTF-8');
@@ -315,6 +340,10 @@ class wiki{
     		$islocked = true;
     	}
 		//Get permissions
+		$f3->set('canedit',false);
+		$f3->set('canrevert',false);
+		$f3->set('candelete',false);
+		$f3->set('canlock',false);
 		if($this->user->gotpermission('edit_wiki')){
 			$f3->set('canedit',true);
 		}
@@ -346,7 +375,7 @@ class wiki{
 		//Process template
 		$f3->set('pagename','wiki_view');
 		$template=new Template;
-    	echo $template->render('wiki_view.html');
+    	echo $template->render('wiki_view.html', 'text/html');
 	}
 
 	function remove(){
@@ -357,7 +386,7 @@ class wiki{
 		if(!$this->user->gotpermission('delete_wiki')){
 			$this->logger->log_action($f3->get('checked_user_id'), $ip, 'DELETE_WIKI', 'NO_ACCESS');
 			$template=new Template;
-			echo $template->render('no_permission.html');
+			echo $template->render('no_permission.html', 'text/html');
 			exit();
 		}
 		
@@ -403,7 +432,7 @@ class wiki{
 			//Process template
 			$f3->set('pagename','wiki_history');
 			$template=new Template;
-	    	echo $template->render('wiki_history.html');
+	    	echo $template->render('wiki_history.html', 'text/html');
     	}else{
     		//Invalid ID, redirect
     		$f3->reroute('/wiki/list/');
@@ -418,7 +447,7 @@ class wiki{
 		if(!$this->user->gotpermission('reverse_wiki')){
 			$this->logger->log_action($f3->get('checked_user_id'), $ip, 'REVERT_WIKI', 'NO_ACCESS');
 			$template=new Template;
-			echo $template->render('no_permission.html');
+			echo $template->render('no_permission.html', 'text/html');
 			exit();
 		}
 	    //Log page hit
@@ -441,7 +470,7 @@ class wiki{
 			//Process template
 			$f3->set('pagename','wiki_revert_history');
 			$template=new Template;
-	    	echo $template->render('wiki_revert_history.html');
+	    	echo $template->render('wiki_revert_history.html', 'text/html');
     	}else{
     		//Invalid ID, redirect
     		$f3->reroute('/wiki/list/');
@@ -456,7 +485,7 @@ class wiki{
 		if(!$this->user->gotpermission('reverse_wiki')){
 			$this->logger->log_action($f3->get('checked_user_id'), $ip, 'REVERT_WIKI', 'NO_ACCESS');
 			$template=new Template;
-			echo $template->render('no_permission.html');
+			echo $template->render('no_permission.html', 'text/html');
 			exit();
 		}
 		
@@ -518,7 +547,7 @@ class wiki{
 		if(!$this->user->gotpermission('lock_wiki')){
 			$this->logger->log_action($f3->get('checked_user_id'), $ip, 'LOCK_WIKI', 'NO_ACCESS');
 			$template=new Template;
-			echo $template->render('no_permission.html');
+			echo $template->render('no_permission.html', 'text/html');
 			exit();
 		}
 		
@@ -543,7 +572,7 @@ class wiki{
 		if(!$this->user->gotpermission('lock_wiki')){
 			$this->logger->log_action($f3->get('checked_user_id'), $ip, 'UNLOCK_WIKI', 'NO_ACCESS');
 			$template=new Template;
-			echo $template->render('no_permission.html');
+			echo $template->render('no_permission.html', 'text/html');
 			exit();
 		}
 		
@@ -627,7 +656,7 @@ class wiki{
 		//Process template
 		$f3->set('pagename','wiki_compare');
 		$template=new Template;
-    	echo $template->render('wiki_compare.html');
+    	echo $template->render('wiki_compare.html', 'text/html');
 	}
 
 	function compare_lookup(){
@@ -656,7 +685,7 @@ class wiki{
 		if(!$this->user->gotpermission('edit_wiki')){
 			$this->logger->log_action($f3->get('checked_user_id'), $ip, 'CREATE_WIKI', 'NO_ACCESS');
 			$template=new Template;
-			echo $template->render('no_permission.html');
+			echo $template->render('no_permission.html', 'text/html');
 			exit();
 		}
 
@@ -675,7 +704,7 @@ class wiki{
 		//Process template
 		$f3->set('pagename','wiki_add');
 		$template=new Template;
-    	echo $template->render('wiki_add.html');		
+    	echo $template->render('wiki_add.html', 'text/html');		
 	}
 	
 	function edit(){
@@ -684,7 +713,7 @@ class wiki{
 		if(!$this->user->gotpermission('edit_wiki')){
 			$this->logger->log_action($f3->get('checked_user_id'), $ip, 'EDIT_WIKI', 'NO_ACCESS');
 			$template=new Template;
-			echo $template->render('no_permission.html');
+			echo $template->render('no_permission.html', 'text/html');
 			exit();
 		}
 	    //Log page hit
@@ -697,7 +726,7 @@ class wiki{
 		if($resultwiki[0]['is_locked'] == 1 && !$this->user->gotpermission('lock_wiki')){
 		    $this->logger->log_action($f3->get('checked_user_id'), $ip, 'EDIT_WIKI', 'LOCKED');
 			$template=new Template;
-			echo $template->render('no_permission.html');
+			echo $template->render('no_permission.html', 'text/html');
 			exit();
 		}
     	//Check for valid ID
@@ -708,6 +737,11 @@ class wiki{
 	    	}else{
 	    		$islocked = false;
 	    	}
+	    	//Get count of posts for this wiki term
+	    	$wiki_tag = $resultwiki[0]["title"];
+	    	$resultcount = $db->exec('SELECT count(p.id) as count FROM '.$f3->get('poststags_table').' as pt JOIN '.$f3->get('post_table').' as p ON (p.id = pt.post_id) WHERE pt.tag_id = (SELECT id FROM '.$f3->get('tags_table').' WHERE name = ? OR LOWER(name) = LOWER(?) LIMIT 1)',array(1=>$wiki_tag,2=>$wiki_tag));
+	    	$post_count = (is_array($resultcount) && isset($resultcount[0]['count'])) ? (int)$resultcount[0]['count'] : 0;
+	    	$recent = $this->get_recent_updated();
 			//Store info for template
 			if ($resultwiki[0]["body"] !== ""){
 				$body = Markdown::instance()->convert($f3->clean($resultwiki[0]["body"]));	
@@ -720,11 +754,12 @@ class wiki{
 			$f3->set('user',$this->user);
 			$f3->set('title',$resultwiki[0]["title"]);
 			$f3->set('term_name',$resultwiki[0]["title"]);
-			$f3->set('post_count',$resultcount[0]['count']);
+			$f3->set('post_count',$post_count);
+			$f3->set('recent',$recent);
 			//Process template
 			$f3->set('pagename','wiki_edit');
 			$template=new Template;
-	    	echo $template->render('wiki_edit.html');
+	    	echo $template->render('wiki_edit.html', 'text/html');
     	}else{
     		//Invalid ID, redirect
     		$f3->reroute('/wiki/list/');

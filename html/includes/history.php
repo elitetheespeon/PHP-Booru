@@ -39,7 +39,7 @@
 			$f3->set('notecount',$count);
 	    	//Render template
 	    	$template=new Template;
-	        echo $template->render('note_history.html');		
+	        echo $template->render('note_history.html', 'text/html');		
 		}else if($type == "page_notes"){
 			//Get note history
 			$result = $db->exec('SELECT id, updated_at, user_id, version, body, note_id FROM '.$f3->get('note_history_table').' WHERE post_id = ? ORDER BY id,version DESC',array(1=>$id));
@@ -72,7 +72,7 @@
 			$f3->set('notecount',$count);
 	    	//Render template
 	    	$template=new Template;
-	        echo $template->render('post_note_history.html');
+	        echo $template->render('post_note_history.html', 'text/html');
 		}else if($type == "tag_history"){
 			//Get tag history
 			$result = $db->exec('SELECT tags, version, user_id, updated_at FROM '.$f3->get('tag_history_table').' WHERE id = ? AND active = \'1\' ORDER BY total_amount DESC',array(1=>$id));
@@ -103,7 +103,7 @@
 			$f3->set('tagcount',$count);
 	    	//Render template
 	    	$template=new Template;
-	        echo $template->render('tag_history.html');
+	        echo $template->render('tag_history.html', 'text/html');
         }else if($type == "revert"){
 			//Check if user has permission to revert
 			if($userc->gotpermission('reverse_notes')){

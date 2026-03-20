@@ -10,8 +10,13 @@ $user = new user();
 $misc = new misc();
 $dmail = new dmail();
 $id = $f3->get('PARAMS.id');
+$conv_id = $id;
 $uname = $f3->get('checked_username');
 $uid = $f3->get('checked_user_id');
+$parentid = $id;
+$to_uid = 0;
+$to_uname = '';
+$titlereply = '';
 $mailcount = 0;
 $mailresult = array();
 
@@ -19,7 +24,7 @@ $mailresult = array();
 if(!$user->check_log()){
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'MAIL_CONV_VIEW', 'NOT_LOGGED_IN');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 } 
 
@@ -28,8 +33,15 @@ if(!$dmail->can_view_mail($id, $uid)){
     $f3->reroute('/mail/inbox');
 }
 
+//Normalize conversation id (support direct links to a reply id)
+$convinfo = $db->exec('SELECT id, parent_id FROM '.$f3->get('dmail_table').' WHERE id = ? LIMIT 1', array(1=>$id));
+if (!empty($convinfo) && !empty($convinfo[0]['parent_id'])){
+    $conv_id = $convinfo[0]['parent_id'];
+}
+$parentid = $conv_id;
+
 //Get messages count
-$messagecount = $db->exec('SELECT COUNT(id) as count FROM '.$f3->get('dmail_table').' WHERE id = ? OR parent_id = ?',array(1=>$id,2=>$id));
+$messagecount = $db->exec('SELECT COUNT(id) as count FROM '.$f3->get('dmail_table').' WHERE id = ? OR parent_id = ?',array(1=>$conv_id,2=>$conv_id));
 $numrows = $messagecount[0]["count"];
 
 //Pagination
@@ -44,6 +56,8 @@ if ($f3->get('PARAMS.page') == ""){
 $pg_start = $limit*($f3->get('PARAMS.page')-1);
 $pg_curr = $pg_start;
 $pg_end = $pg_start+$limit;
+$pg_start = (int)$pg_start;
+$limit = (int)$limit;
 if ($pg_end > $numrows){
 	$pg_end = $numrows;
 }
@@ -54,7 +68,7 @@ if ($pg_start > $numrows || $pg_start < 0){
 }
 
 //Get messages related to conversation
-$mailinfo = $db->exec('SELECT * FROM '.$f3->get('dmail_table').' WHERE id = ? OR parent_id = ? LIMIT ?,?',array(1=>$id,2=>$id,3=>$pg_start,4=>$limit));
+$mailinfo = $db->exec('SELECT * FROM '.$f3->get('dmail_table').' WHERE id = ? OR parent_id = ? ORDER BY id ASC LIMIT '.$pg_start.','.$limit,array(1=>$conv_id,2=>$conv_id));
 
 //Start loop through mail
 foreach($mailinfo as $mail){
@@ -78,6 +92,7 @@ foreach($mailinfo as $mail){
         }
     }
     //Convert results for template
+    $mailresult[$mailcount]['id'] = $mail["id"];
     $mailresult[$mailcount]['from_id'] = $mail["from_id"];
     $mailresult[$mailcount]['from_username'] = $user->get_username($mail["from_id"]);
     $mailresult[$mailcount]['from_avatarinfo'] = $user->get_avatar($mail["from_id"]);

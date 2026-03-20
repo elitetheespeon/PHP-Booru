@@ -5,7 +5,7 @@
 // Does not need any php-flash extension, based on raw binary data reading
 //----------------------------------------------------------------------------- 
 //	SWFHEADER CLASS - PHP SWF header parser
-//	Copyright (C) 2004  Carlos Falo Hervás
+//	Copyright (C) 2004  Carlos Falo Hervï¿½s
 //
 //	This library is free software; you can redistribute it and/or
 //	modify it under the terms of the GNU Lesser General Public
@@ -40,9 +40,14 @@ class swfheader {
 	// swfheader($debug) : 	Constructor, basically does nothing but initilize 
 	//											debug and data fields
 	//--------------------------------------------------------------------------- 
-	function swfheader($debug = false) {
+	function __construct($debug = false) {
 		$this->debug = $debug ;
 		$this->init() ;
+	  }
+
+	// Legacy PHP 4-style constructor kept as wrapper for backward compatibility.
+	function swfheader($debug = false) {
+		$this->__construct($debug) ;
 	  }
 
 	//--------------------------------------------------------------------------- 	
@@ -261,4 +266,3 @@ class swfheader {
 	}
 }
 ?>
-

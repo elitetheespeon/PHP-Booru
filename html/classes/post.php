@@ -126,12 +126,16 @@
 		}
 		function is_flagged($id){
 			global $f3, $db;
-			$result = $db->exec('SELECT reason FROM '.$f3->get('flagged_post_table').'  WHERE post_id = ?',array(1=>$id));
+			$result = $db->exec('SELECT reason FROM '.$f3->get('flagged_post_table').'  WHERE post_id = ? ORDER BY created_at DESC, id DESC LIMIT 1',array(1=>$id));
 			$numrows = count($result);
 			if($numrows == 0){
 				return false;
 			}else{
-			    return $result[0]["reason"];
+				$reason = trim((string)$result[0]["reason"]);
+				if($reason === ''){
+					return false;
+				}
+			    return $reason;
 			}
 		}
 		function get_dimensions($id){
@@ -274,20 +278,28 @@
 				return $id;			
 			}
         }
-        function edit_post(){
+		function edit_post(){
 			global $f3, $db;
 			$logger = new logger();
 			$misc = new misc();
 			$user = new user();
 			$tagc = new tag();
 			$webhook = new webhook();
+			$f3->set('pagename','post_edit');
 			$ip = $_SERVER['REMOTE_ADDR'];	
 			
 			//Make sure pconf was posted
-			if($_POST['pconf'] !="1"){
+			if((($_POST['pconf'] ?? '') !== "1")){
 				$logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'EDIT_POST', 'MISSING_PCONF');
 				$template=new Template;
-			    echo $template->render('no_permission.html');
+			    echo $template->render('no_permission.html', 'text/html');
+				exit();
+			}
+
+			if(!isset($_POST['id']) || !is_numeric($_POST['id'])){
+				$logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'EDIT_POST', 'MISSING_ID');
+				$template=new Template;
+			    echo $template->render('no_permission.html', 'text/html');
 				exit();
 			}
 			
@@ -295,7 +307,7 @@
 			if($user->banned_ip($ip)){
 			    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'EDIT_POST', 'BANNED');
 				$template=new Template;
-			    echo $template->render('no_permission.html');
+			    echo $template->render('no_permission.html', 'text/html');
 				exit();
 			}
 			
@@ -303,16 +315,17 @@
 			if(!$user->check_log()){
 			    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'EDIT_POST', 'NOT_LOGGED_IN');
 				$template=new Template;
-			    echo $template->render('no_permission.html');
+			    echo $template->render('no_permission.html', 'text/html');
 				exit();
 			}
 			
 			$user_id = $f3->get('checked_user_id');
 			$id = $_POST['id'];
+			$postedTags = (isset($_POST['tags']) && is_array($_POST['tags'])) ? $_POST['tags'] : array();
 			
 			//New tags submitted by user
 			$ttags = array();
-			foreach ($_POST['tags'] as $atag){
+			foreach ($postedTags as $atag){
 			    //Decode and clean tag
 			    $ntag = mb_strtolower(str_replace('%','',$f3->decode($atag)));
 			    
@@ -337,7 +350,9 @@
 			
 			//Get the current tags from database
 			$resultname = $db->exec('SELECT name FROM '.$f3->get('poststags_table').' AS pt LEFT JOIN '.$f3->get('tags_table').' AS t ON pt.tag_id = t.id WHERE post_id = ?',array(1=>$id));
-			$tagname = $resultname[0]["name"];
+			if(!is_array($resultname)){
+				$resultname = array();
+			}
 			
 			//Create array with original tags
 			$tagsold = array();
@@ -348,6 +363,7 @@
 			
 			//Create array with new tags
 			$tagsnewa = $ttags;
+			$tagsnew = array();
 			$i = 0;
 			foreach($tagsnewa as $value){
 			    $tagsnew['new'.$i++] = $value;
@@ -407,7 +423,11 @@
 			//Update tag history and the user tag edit count if tags were edited
 			if (!empty($added) || !empty($removed)){
 			    $curversion = $db->exec('SELECT version FROM '.$f3->get('tag_history_table').' WHERE id = ? ORDER BY version DESC LIMIT 1',array(1=>$id));
-			    $insert2 = $db->exec('INSERT INTO '.$f3->get('tag_history_table').' (id, tags, version, user_id, updated_at, ip) VALUES(?, ?, ?, ?, NOW(), ?)',array(1=>$id,2=>$cleantaglist,3=>$curversion[0]["version"]+1,4=>$user_id,5=>$ip));
+			    $nextversion = 1;
+			    if (is_array($curversion) && isset($curversion[0]['version'])){
+			    	$nextversion = ((int)$curversion[0]['version']) + 1;
+			    }
+			    $insert2 = $db->exec('INSERT INTO '.$f3->get('tag_history_table').' (id, tags, version, user_id, updated_at, ip) VALUES(?, ?, ?, ?, NOW(), ?)',array(1=>$id,2=>$cleantaglist,3=>$nextversion,4=>$user_id,5=>$ip));
 			    $update1 = $db->exec('UPDATE '.$f3->get('user_table').' SET tag_edit_count = tag_edit_count + 1 WHERE id = ?',array(1=>$id));
 			}
 			
@@ -476,7 +496,7 @@
 			if($user->banned_ip($ip)){
 			    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'NOTE_SAVE', 'BANNED');
 				$template=new Template;
-			    echo $template->render('no_permission.html');
+			    echo $template->render('no_permission.html', 'text/html');
 				exit();
 			}
 			
@@ -484,7 +504,7 @@
 			if(!$user->check_log() || !$user->gotpermission('alter_notes')){
 			    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'NOTE_SAVE', 'NO_ACCESS');
 				$template=new Template;
-			    echo $template->render('no_permission.html');
+			    echo $template->render('no_permission.html', 'text/html');
 				exit();
 			}
 			
@@ -549,7 +569,7 @@
 			if(!$user->check_log() || !$user->gotpermission('delete_posts')){
 			    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'REMOVE', 'NO_ACCESS');
 				$template=new Template;
-			    echo $template->render('no_permission.html');
+			    echo $template->render('no_permission.html', 'text/html');
 				exit();
 			}
 			
@@ -572,12 +592,16 @@
 			
 			        //Check if there is already a flag reason
 			        $getflagged = $db->exec('SELECT COUNT(*) as count FROM '.$f3->get('flagged_post_table').' as f LEFT JOIN '.$f3->get('post_table').' as p ON (p.id=f.post_id) WHERE p.id = ?',array(1=>$_POST['id']));
-			        $flagreason = $getflagged[0]["count"];
+			        $flagreason = (int)$getflagged[0]["count"];
+			        $delete_reason = trim((string)$_POST['reason']);
+			        if($delete_reason === ''){
+			        	$delete_reason = 'No reason provided.';
+			        }
 			        
 			        //Start the changes
-			        if ($flagreason !== "0"){
+			        if ($flagreason > 0){
 			            //Post has flag reason, update
-			            $update1 = $db->exec('UPDATE '.$f3->get('flagged_post_table').' SET created_at = NOW(), reason = ?, user_id = ? WHERE post_id = ?',array(1=>$_POST['reason'],2=>$f3->get('checked_user_id'),3=>$_POST['id']));
+			            $update1 = $db->exec('UPDATE '.$f3->get('flagged_post_table').' SET created_at = NOW(), reason = ?, user_id = ? WHERE post_id = ?',array(1=>$delete_reason,2=>$f3->get('checked_user_id'),3=>$_POST['id']));
 			            
 			            //Update post status
 			            $setstatus = "deleted";
@@ -589,7 +613,7 @@
 			        }else{
 			            //Post does not have flag reason, insert
 			            $resolved = 1;
-			            $insert = $db->exec('INSERT INTO '.$f3->get('flagged_post_table').' (created_at, post_id, reason, user_id, is_resolved) VALUES(NOW(), ?, ?, ?, ?)',array(1=>$_POST['id'],2=>$_POST['reason'],3=>$f3->get('checked_user_id'),4=>$resolved));
+			            $insert = $db->exec('INSERT INTO '.$f3->get('flagged_post_table').' (created_at, post_id, reason, user_id, is_resolved) VALUES(NOW(), ?, ?, ?, ?)',array(1=>$_POST['id'],2=>$delete_reason,3=>$f3->get('checked_user_id'),4=>$resolved));
 			
 			            //Update post status
 			            $setstatus = "deleted";
@@ -617,7 +641,7 @@
 			if($user->banned_ip($ip)){
 			    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'EDIT_POOL', 'BANNED');
 				$template=new Template;
-			    echo $template->render('no_permission.html');
+			    echo $template->render('no_permission.html', 'text/html');
 				exit();
 			}
 			
@@ -625,7 +649,7 @@
 			if(!$user->check_log() || !$user->gotpermission('delete_posts')){
 			    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'EDIT_POOL', 'NOT_LOGGED_IN');
 				$template=new Template;
-			    echo $template->render('no_permission.html');
+			    echo $template->render('no_permission.html', 'text/html');
 				exit();
 			}
 			
@@ -691,7 +715,7 @@
 			if($user->banned_ip($ip)){
 			    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'ADD_TO_POOL', 'BANNED');
 				$template=new Template;
-			    echo $template->render('no_permission.html');
+			    echo $template->render('no_permission.html', 'text/html');
 				exit();
 			}
 			
@@ -699,7 +723,7 @@
 			if(!$user->check_log() || !$user->gotpermission('edit_posts')){
 			    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'ADD_TO_POOL', 'NOT_LOGGED_IN');
 				$template=new Template;
-			    echo $template->render('no_permission.html');
+			    echo $template->render('no_permission.html', 'text/html');
 				exit();
 			}
 			
@@ -759,7 +783,7 @@
 			if(!$user->check_log() || !$user->gotpermission('approve_posts')){
 			    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'POST_APPROVE', 'NO_ACCESS');
 				$template=new Template;
-			    echo $template->render('no_permission.html');
+			    echo $template->render('no_permission.html', 'text/html');
 				exit();
 			}
 			
@@ -802,7 +826,7 @@
 			if(!$user->check_log() || !$user->gotpermission('admin_panel')){
 			    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'CHANGE_POST_STATUS', 'NOT_LOGGED_IN');
 				$template=new Template;
-			    echo $template->render('no_permission.html');
+			    echo $template->render('no_permission.html', 'text/html');
 				exit();
 			}
 			
@@ -859,7 +883,7 @@
 			if(!$user->check_log() || !$user->gotpermission('admin_panel')){
 			    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'CHANGE_DNP', 'NOT_LOGGED_IN');
 				$template=new Template;
-			    echo $template->render('no_permission.html');
+			    echo $template->render('no_permission.html', 'text/html');
 				exit();
 			}
 			
@@ -901,7 +925,7 @@
 			if($user->banned_ip($ip)){
 			    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'POOL_EDITOR', 'BANNED');
 				$template=new Template;
-			    echo $template->render('no_permission.html');
+			    echo $template->render('no_permission.html', 'text/html');
 				exit();
 			}
 			
@@ -909,7 +933,7 @@
 			if(!$user->check_log()){
 			    $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'POOL_EDITOR', 'NOT_LOGGED_IN');
 				$template=new Template;
-			    echo $template->render('no_permission.html');
+			    echo $template->render('no_permission.html', 'text/html');
 				exit();
 			}
 			
@@ -990,7 +1014,7 @@
                 $dnp = " WHERE dnp=0 AND status = 'active'";
             }
 		    //Get total number of posts
-		    $postcount = $db->exec('SELECT (SELECT COUNT(id) as count FROM '.$f3->get('post_table').' '.$dnp.') as count, (SELECT `value` FROM settings WHERE `key` = \'version\') as ver',array(1=>$postnum,2=>$poolid,3=>$postid));
+		    $postcount = $db->exec('SELECT (SELECT COUNT(id) as count FROM '.$f3->get('post_table').' '.$dnp.') as count, (SELECT `value` FROM settings WHERE `key` = \'version\') as ver');
 		    $totalposts = $postcount[0]["count"];
 		    $version = $postcount[0]["ver"];
 			$digits = array();
@@ -1005,7 +1029,7 @@
 			$f3->set('user',$user);
 			//Process template
 			$template=new Template;
-        	echo $template->render('main_page.html');
+	        	echo $template->render('main_page.html','text/html');
 		}
 	}
 ?>

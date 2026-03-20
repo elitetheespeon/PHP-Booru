@@ -9,6 +9,7 @@ class favorites{
 	    global $f3,$db;
 	    $logger = new logger();
 		$post = new post();
+		$favres = array();
 		$logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'FAVORITES_VIEW', $f3->get('PARAMS.id'));
 		//Number of images/page
 		$limit = 50;
@@ -70,12 +71,13 @@ class favorites{
         //Render template
         $f3->set('pagename','favorites_view');
     	$template=new Template;
-        echo $template->render('favorites_view.html');
+        echo $template->render('favorites_view.html', 'text/html');
 	}
 	
 	function fav_list(){
 	    global $f3,$db;
 	    $logger = new logger();
+		$userfavres = array();
 		$logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'FAVORITES_LIST', $f3->get('PARAMS.page'));
 		//Number of users/page
 		$limit = 50;	    
@@ -118,7 +120,7 @@ class favorites{
         //Render template
         $f3->set('pagename','favorites_list');
     	$template=new Template;
-        echo $template->render('favorites_list.html');
+        echo $template->render('favorites_list.html', 'text/html');
     }
     
     function fav_delete(){
@@ -136,7 +138,7 @@ class favorites{
         if(!$user->check_log()){
             $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'FAVORITES_DELETE', 'NOT_LOGGED_IN');
         	$template=new Template;
-            echo $template->render('no_permission.html');
+            echo $template->render('no_permission.html', 'text/html');
         	exit();
         }
 		

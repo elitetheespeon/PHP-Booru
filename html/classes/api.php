@@ -25,7 +25,7 @@ class api{
             //Loop through each IP and check
             foreach($f3->get('api_allowed_ips') as $allowed_ip){
                 //Check for trusted IP from Cloudflare
-                if($_SERVER["HTTP_CF_CONNECTING_IP"]){
+                if(($_SERVER["HTTP_CF_CONNECTING_IP"] ?? null)){
                     //Cloudflare enabled, check CF header
                     if ($_SERVER["HTTP_CF_CONNECTING_IP"] == $allowed_ip){
                         //Trusted IP
@@ -130,7 +130,7 @@ class api{
             //Loop through each IP and check
             foreach($f3->get('api_allowed_ips') as $allowed_ip){
                 //Check for trusted IP from Cloudflare
-                if($_SERVER["HTTP_CF_CONNECTING_IP"]){
+                if(($_SERVER["HTTP_CF_CONNECTING_IP"] ?? null)){
                     //Cloudflare enabled, check CF header
                     if ($_SERVER["HTTP_CF_CONNECTING_IP"] == $allowed_ip){
                         //Trusted IP

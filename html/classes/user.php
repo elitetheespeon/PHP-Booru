@@ -118,8 +118,8 @@
 			if($numrows == 1){
 		        $f3->set('COOKIE.user_id',$result[0]['id'],60*60*24*365);
 		        $f3->set('COOKIE.pass_hash',$pass,60*60*24*365);
-		        $f3->set('COOKIE.tags',$result[0]['my_tags'],60*60*24*365);
-				if(!isset($_COOKIE['tag_blacklist']) && $result[0]['tags'] != "")
+		        $f3->set('COOKIE.tags',($result[0]['my_tags'] ?? ''),60*60*24*365);
+				if(!isset($_COOKIE['tag_blacklist']) && (($result[0]['tags'] ?? '') != ""))
 					$f3->set('COOKIE.tag_blacklist',$result[0]['tags']);
 				$this->logger->log_action($result[0]['id'], $_SERVER['REMOTE_ADDR'], 'LOGIN', 'SUCCESS');
                 return true;

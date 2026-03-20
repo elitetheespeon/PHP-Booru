@@ -43,6 +43,8 @@ $misc->tag_pagination($f3->get('PARAMS.tags'));
 $pages = new Pagination($numrows, $limit);
 $pages->setTemplate('pagination_tags.html');
 $f3->set('pagebrowser', $pages->serve());
+$f3->set('posts', array());
+$f3->set('tags', array());
 if ($f3->get('PARAMS.page') == ""){
 	$f3->set('PARAMS.page',1);
 }

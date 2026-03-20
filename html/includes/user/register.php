@@ -4,18 +4,19 @@ $user = new user();
 $misc = new misc();
 $logger = new logger();
 $ip = $_SERVER['REMOTE_ADDR'];
+$info_error = '';
 
 //Check if registration is enabled
 if($f3->get('registration_allowed') != true){
   $template=new Template;
-  echo $template->render('register_disabled.html');
+  echo $template->render('register_disabled.html', 'text/html');
   exit();
 }
 
 //Check if user is banned
 if($user->banned_ip($ip)){
   $template=new Template;
-  echo $template->render('no_permission.html');
+  echo $template->render('no_permission.html', 'text/html');
   exit();
 }
 

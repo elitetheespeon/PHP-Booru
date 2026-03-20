@@ -37,9 +37,16 @@ $f3->set('postdata',$post_data);
 //Load the previous next values in
 $prev_next = $post->prev_next($id);
 $f3->set('prev_next',$prev_next);
+$f3->set('prevnext', array(
+    0 => $prev_next['prev'],
+    1 => $prev_next['next']
+));
 
 //Get list of tags for post
 $ttags = $post->get_tags($id);
+if(!is_array($ttags)){
+	$ttags = array();
+}
 $tags = $misc->mb_trim(html_entity_decode($post_data[0]['tags'], ENT_QUOTES, "UTF-8"));
 $tagsarr = explode(" ", $tags);
 
@@ -82,6 +89,9 @@ $f3->set('flagres',$flagres);
 
 //Check if this post is part of any pools and store result
 $poolinfo = $post->is_pooled($id);
+if(!is_array($poolinfo)){
+    $poolinfo = array();
+}
 $f3->set('poolinfo',$poolinfo);
 
 //Grab the index count and tag type from database.
@@ -157,10 +167,14 @@ $f3->set('note_data',$note_data);
 
 //Get comment count
 $count = $comment->count($f3->get('PARAMS.id'),'post','view');
+$count = (int)$count;
 $f3->set('commentcount',$count);
 
 //Query for the comments
 $comments = $comment->get_comments($id);
+if(!is_array($comments)){
+    $comments = array();
+}
 
 //Start pagination for comments
 $pages = new Pagination($count, $limit);

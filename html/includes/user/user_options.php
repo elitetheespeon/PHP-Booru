@@ -5,6 +5,17 @@
         $f3->reroute('/user/login/00');
     }
 
+	$new_cthreshold = '';
+	$new_pthreshold = '';
+	$new_tag_list = '';
+	$new_user_list = '';
+	$new_my_tags = '';
+	$notify1 = '';
+	$notify2 = '';
+	$api_access1 = '';
+	$api_access2 = '';
+	$api_access3 = '';
+
 	if(isset($_POST['submit'])){
 		//User blacklist
         if(isset($_POST['users']) && $_POST['users'] != ""){
@@ -101,10 +112,10 @@
 //Comment threshold for template
 if($new_cthreshold == "" && !isset($_COOKIE['comment_threshold'])){
     $comment_threshold = 0;
-}elseif($new_threshold != "" && is_int($new_threshold)){
+}elseif($new_cthreshold != "" && is_numeric($new_cthreshold)){
     $comment_threshold = $new_cthreshold;
 }else{
-    $comment_threshold = $_COOKIE['comment_threshold'];
+    $comment_threshold = ($_COOKIE['comment_threshold'] ?? 0);
 }
 $f3->set('comment_threshold',$comment_threshold);
 
@@ -114,7 +125,7 @@ if($new_pthreshold == "" && !isset($_COOKIE['post_threshold'])){
 }elseif($new_pthreshold != "" && is_int($new_pthreshold)){
     $post_threshold = $new_pthreshold;
 }else{
-    $post_threshold = $_COOKIE['post_threshold'];
+    $post_threshold = ($_COOKIE['post_threshold'] ?? 0);
 }
 $f3->set('post_threshold',$post_threshold);
 
@@ -122,7 +133,7 @@ $f3->set('post_threshold',$post_threshold);
 if($new_tag_list != ""){
     $tag_blacklist = $new_tag_list;
 }else{
-    $tag_blacklist = str_replace('%20',' ', str_replace("&#039;","'",$_COOKIE['tag_blacklist']));
+    $tag_blacklist = str_replace('%20',' ', str_replace("&#039;","'",($_COOKIE['tag_blacklist'] ?? '')));
 }
 $f3->set('tag_blacklist',$tag_blacklist);
 
@@ -130,7 +141,7 @@ $f3->set('tag_blacklist',$tag_blacklist);
 if($new_user_list != ""){
     $user_blacklist = $new_user_list; 
 }else{
-    $user_blacklist = str_replace('%20',' ', str_replace("&#039;","'", $_COOKIE['user_blacklist']));
+    $user_blacklist = str_replace('%20',' ', str_replace("&#039;","'", ($_COOKIE['user_blacklist'] ?? '')));
 }
 $f3->set('user_blacklist',$user_blacklist);
 
@@ -138,7 +149,7 @@ $f3->set('user_blacklist',$user_blacklist);
 if($new_my_tags != ""){
     $tags = $new_my_tags;
 }else{    
-    $tags = str_replace("%20", " ",str_replace('&#039;',"'",$_COOKIE['tags']));
+    $tags = str_replace("%20", " ",str_replace('&#039;',"'",($_COOKIE['tags'] ?? '')));
 }
 $f3->set('tags',$tags);
 

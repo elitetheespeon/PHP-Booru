@@ -8,6 +8,7 @@ $limit = 40;
 //Load required classes
 $misc = new misc();
 $user = new user();
+$resultpool = array();
 
 //Query for total number of pools
 $resultpoolcount = $db->exec('SELECT COUNT(id) as count FROM '.$f3->get('pool_table'));

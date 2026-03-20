@@ -3,12 +3,15 @@
 $dmail = new dmail();
 $user = new user();
 $logger = new logger();
+$to_userid = '';
+$to_username = '';
+$f3->set('user_title', '');
 
 //Check if user is banned
 if($user->banned_ip($_SERVER['REMOTE_ADDR'])){
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'SEND_MAIL', 'BANNED');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 }
 
@@ -16,17 +19,17 @@ if($user->banned_ip($_SERVER['REMOTE_ADDR'])){
 if(!$user->check_log()){
     $logger->log_action($f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'SEND_MAIL', 'NOT_LOGGED_IN');
 	$template=new Template;
-    echo $template->render('no_permission.html');
+    echo $template->render('no_permission.html', 'text/html');
 	exit();
 }
 
 //Check if post var is set and make sure nothing is null
-if($_POST['conf'] == 1 && $_POST['to_user'] !== "" && $_POST['title'] !== "" && $_POST['post'] !== ""){
+if((($_POST['conf'] ?? null) == 1) && (($_POST['to_user'] ?? '') !== "") && (($_POST['title'] ?? '') !== "") && (($_POST['post'] ?? '') !== "")){
     //Look up username to id
     $to_id = $user->get_userid($_POST['to_user']);
     if ($to_id !== false){
         //Check if parent ID was sent
-        if ($_POST['parentid'] !== "" && is_numeric($_POST['parentid'])){
+        if (($_POST['parentid'] ?? '') !== "" && is_numeric($_POST['parentid'])){
             //Check to make sure the parentid is a post the user has access to view.
             if ($dmail->can_view_mail($_POST['parentid'], $f3->get('checked_user_id'))){
                 //Put dmail into database

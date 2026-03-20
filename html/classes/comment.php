@@ -140,7 +140,7 @@
 			$f3->set('posted_at',$posted_at);
 			$f3->set('score',$score);
 			$template=new Template;
-		    echo $template->render('comment_list.html');
+		    echo $template->render('comment_list.html', 'text/html');
 		}
 		
 		function get_comments($id){

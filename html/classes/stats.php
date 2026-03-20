@@ -101,7 +101,7 @@ class stats{
 		//Process template
 		$f3->set('pagename','stats_users');
 		$template=new Template;
-    	echo $template->render('stats_users.html');
+    	echo $template->render('stats_users.html', 'text/html');
     }
 }
 ?>

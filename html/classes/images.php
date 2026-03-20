@@ -214,8 +214,8 @@
 			$imginfo = getimagesize($image);
 			$max = ($imginfo[0] > $imginfo[1]) ? $imginfo[0] : $imginfo[1];
 			$scale = ($max < $this->dimensionava) ? 1 : $this->dimensionava / $max;
-			$width = $imginfo[0] * $scale;
-			$height = $imginfo[1] * $scale;
+			$width = max(1, (int)round($imginfo[0] * $scale));
+			$height = max(1, (int)round($imginfo[1] * $scale));
 			$thumbnail = imagecreatetruecolor($width,$height);
 			imagecopyresampled($thumbnail,$img,0,0,0,0,$width,$height,$imginfo[0],$imginfo[1]);
 
@@ -253,7 +253,9 @@
 			imagedestroy($img);
 			imagedestroy($thumbnail);
 			
-            unlink("./tmp/".$fname.$ext);                
+			if(file_exists("./tmp/".$fname.$ext)){
+				unlink("./tmp/".$fname.$ext);
+			}
             return $avamd5.$ext;
 		}
 
@@ -289,8 +291,8 @@
 				$imginfo = getimagesize($image);
 				$max = ($imginfo[0] > $imginfo[1]) ? $imginfo[0] : $imginfo[1];
 				$scale = ($max < $this->dimension) ? 1 : $this->dimension / $max;
-				$width = $imginfo[0] * $scale;
-				$height = $imginfo[1] * $scale;
+				$width = max(1, (int)round($imginfo[0] * $scale));
+				$height = max(1, (int)round($imginfo[1] * $scale));
 				$thumbnail = imagecreatetruecolor($width,$height);
 				imagecopyresampled($thumbnail,$img,0,0,0,0,$width,$height,$imginfo[0],$imginfo[1]);
 				imagejpeg($thumbnail,"./".$this->thumbnail_path."/".$hash.".jpg",95);
@@ -581,10 +583,12 @@
 		
 		function checksum($file){
 			global $db, $f3;
-			$i = 0;
+			$i = '';
 			$tmp_md5_sum = md5_file($file);
 			$result = $db->exec('SELECT id FROM '.$f3->get('post_table').' WHERE hash = ? LIMIT 1',array(1=>$tmp_md5_sum));
-			$i = $result[0]['id'];
+			if(count($result) > 0){
+				$i = $result[0]['id'];
+			}
 			
 			if($i != "" && $i != NULL){
 				$this->error = "That image already exists. You can find it <a href=\"/post/view/$i\">here</a><br />";
