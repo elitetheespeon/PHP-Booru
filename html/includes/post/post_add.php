@@ -342,12 +342,20 @@ if(isset($_POST['submit'])){
 			}
 		}
 
-		//Check for post error
-		if (isset($error[$ukey]["postid"]) != null){
+		//Check for at least one successful upload before firing batched webhook
+		$has_uploaded_post = false;
+		foreach($error as $upload_result){
+			if(isset($upload_result['postid'])){
+				$has_uploaded_post = true;
+				break;
+			}
+		}
+		if($has_uploaded_post){
 			//Check for create post notification webhook URL
-			if($f3->get('webhooks.add_post') != null && count($f3->get('webhook_data_np') > 0)){
+			$webhook_data_np = $f3->get('webhook_data_np');
+			if($f3->get('webhooks.add_post') != null && is_array($webhook_data_np) && count($webhook_data_np) > 0){
 				//Process webhook data and save
-				$webhook_data = $webhook->process_data('add_post', $f3->get('webhook_data_np'));
+				$webhook_data = $webhook->process_data('add_post', $webhook_data_np);
 				
 				//Check if we have at lease one valid post
 				if (!empty($webhook_data)){

@@ -25,14 +25,22 @@
 		function deleteindextag($tagid){
 			global $db, $f3;
 			if($tagid != ""){
-                $result = $db->exec('SELECT id, post_count FROM '.$f3->get('tags_table')." WHERE id = ?",array(1=>$tagid));
-                if($result[0]['post_count'] > 1){
-					$update = $db->exec('UPDATE '.$f3->get('tags_table')." SET post_count = post_count - 1 WHERE id = ?",array(1=>$tagid));
+	                if(is_numeric($tagid)){
+	                	$result = $db->exec('SELECT id, post_count FROM '.$f3->get('tags_table')." WHERE id = ?",array(1=>$tagid));
+	                }else{
+	                	$result = $db->exec('SELECT id, post_count FROM '.$f3->get('tags_table')." WHERE name = ? LIMIT 1",array(1=>$tagid));
+	                }
+	                if(!is_array($result) || count($result) === 0){
+	                	return false;
+	                }
+	                $resolved_id = $result[0]['id'];
+	                if($result[0]['post_count'] > 1){
+					$update = $db->exec('UPDATE '.$f3->get('tags_table')." SET post_count = post_count - 1 WHERE id = ?",array(1=>$resolved_id));
 				}else{
-					$delete = $db->exec('DELETE FROM '.$f3->get('tags_table')." WHERE id = ?",array(1=>$tagid));
-                }
+					$delete = $db->exec('DELETE FROM '.$f3->get('tags_table')." WHERE id = ?",array(1=>$resolved_id));
+	                }
 			}else{
-                return false;
+	                return false;
 			}
 		}
 		

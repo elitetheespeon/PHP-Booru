@@ -113,6 +113,7 @@ class webhook{
 
 	function push($type, $json){
 		global $f3, $db;
+		$status = null;
 
 		//Log action
         $this->logger->log_action($this->f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'WEBHOOK_PUSH', 'START: '.$type);
@@ -124,13 +125,16 @@ class webhook{
                 'body' => $json
             ]);
             $status = $request->getStatusCode();
-    	}catch(Exception $e){
-    	    //Log error
-    	    $this->logger->log_action($this->f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'WEBHOOK_PUSH', 'ERROR: '.$e->getMessage());
-    	}
-    	
-    	//Check status of call
-        if($status < 200 || $status > 226){
+	    	}catch(Exception $e){
+	    	    //Log error
+	    	    $this->logger->log_action($this->f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'WEBHOOK_PUSH', 'ERROR: '.$e->getMessage());
+	    	}
+	    	
+	    	//Check status of call
+	        if($status === null){
+	            //Request failed before a status code was available
+	            $this->logger->log_action($this->f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'WEBHOOK_PUSH', 'ERROR: No status code returned');
+	        }elseif($status < 200 || $status > 226){
             //Log error
             $this->logger->log_action($this->f3->get('checked_user_id'), $_SERVER['REMOTE_ADDR'], 'WEBHOOK_PUSH', 'ERROR: Code '.$status);
         }else{
