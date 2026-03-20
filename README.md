@@ -91,12 +91,12 @@ On first start, the app container will:
 - DB container name: `phpbooru-db`
 - App URL: `http://localhost:12345/`
 - DB host from app: `db`
-- DB port on host: `3306`
+- DB port on host: `33066`
 - Default DB credentials:
   - database: `phpbooru`
   - user: `phpbooru`
-  - password: `phpbooru`
-  - root password: `root`
+  - password: `hahaha-I-am-A-Password-123`
+  - root password: `hahaha-I-am-The-ROOT-Password-123`
 
 ### Reset database state
 
