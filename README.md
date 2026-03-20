@@ -3,9 +3,13 @@ Below you will find information on setting up your own instance of this imageboa
 
 ## Required Server Software
 
-- Webserver with PHP 5.6 support (Tested under [Litespeed](https://www.litespeedtech.com/products/litespeed-web-server)/[Openlitespeed](https://www.litespeedtech.com/open-source/openlitespeed)) and mod_rewrite enabled
-- PHP 5.6 with the following modules enabled: bcmath, curl, date, dom, ereg, fileinfo, gd, hash, json, libxml, mbstring, mcrypt, mysql, mysqli, mysqlnd, pcre, PDO, pdo_mysql, Phar, session, SimpleXML, xml, zlib
-- [MySQL 5.7](https://dev.mysql.com/downloads/mysql/) or [MariaDB 10.x](https://mariadb.org/download/) (Tested on MySQL 5.7)
+- Web server with URL rewriting enabled (Apache `mod_rewrite` or equivalent). Tested under [Litespeed](https://www.litespeedtech.com/products/litespeed-web-server)/[Openlitespeed](https://www.litespeedtech.com/open-source/openlitespeed).
+- PHP **8.4** (aligned with the Docker runtime in `docker/php84/Dockerfile`).
+- PHP extensions required: `bcmath`, `curl`, `gd`, `mbstring`, `mysqli`, `pdo`, `pdo_mysql`, `soap`, `xml`, `zip`.
+- Common runtime/core extensions expected by app and dependencies: `json`, `fileinfo`, `libxml`, `openssl`, `phar`, `session`, `tokenizer`, `ctype`, `zlib`.
+- Database:
+  - [MySQL 5.7](https://dev.mysql.com/downloads/mysql/) (current Docker Compose default)
+  - [MariaDB 10.11 LTS](https://mariadb.org/download/) recommended for new non-Docker installs
 
 ## On to the setup (assuming you have installed/setup all required software):
 
@@ -43,19 +47,24 @@ There is currently NO installer and all files are provided as is (you still need
 
 ## Docker Compose (local development)
 
-This repository now includes a Docker setup for local development with:
+This repository includes a Docker setup for local development with:
 
-- PHP 5.6 + Apache (`app` service)
+- PHP 8.4 + Apache (`app` service)
 - MySQL 5.7 (`db` service)
 - Automatic initial schema import from `database.sql`
+
+Recommended tool versions for quick start:
+
+- Docker Engine 24.x+
+- Docker Compose plugin v2.20+
 
 ### Included files
 
 - `docker-compose.yml`
-- `docker/php56/Dockerfile`
-- `docker/php56/apache-vhost.conf`
-- `docker/php56/php-custom.ini`
-- `docker/php56/entrypoint.sh`
+- `docker/php84/Dockerfile`
+- `docker/php84/apache-vhost.conf`
+- `docker/php84/php-custom.ini`
+- `docker/php84/entrypoint.sh`
 
 ### First run
 
