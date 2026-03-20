@@ -4,6 +4,7 @@
 	$user = new user();
 	$misc = new misc();
 	$secondstep = false;
+	$message = '';
 	
 	//Check if user is logged in
 	if($user->check_log()){
